@@ -10,6 +10,7 @@ Dieses Repository dokumentiert die Entwicklung eines Stadtmodells, mit Fokus auf
 - `results/`: Modelloutputs, Karten und Abbildungen.
 - `docs/`: Ergänzende Dokumentation und Konzepte.
 
+```bash
 CodeBTh04/
 │
 ├── README.md
@@ -24,7 +25,7 @@ CodeBTh04/
   │   └── visualization/    # Karten, Diagramme etc.
   ├── notebooks/            # Jupyter Notebooks für Exploration / Prototypen
   └── results/              # Outputs: Karten, Charts, Modelloutputs etc.
-
+```
 
 ## ⚙️ Setup
 
