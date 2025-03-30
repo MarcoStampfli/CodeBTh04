@@ -10,7 +10,7 @@ Die Gliederung des Repo's soll wie folgt nach Hierachie erfolgen:
 ## 📁 Projektstruktur
 
 ```text
-stadtmodell/
+CodeBTh04/
 │
 ├── README.md                    # Projektübersicht
 ├── requirements.txt             # Python-Abhängigkeiten
