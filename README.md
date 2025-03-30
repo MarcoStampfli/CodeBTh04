@@ -1,30 +1,48 @@
 # CodeBTh04
 # Github Repo für die Bachelor Thesis Nr 04: Stadtmodel Basel 1960
-Dieses Repository dokumentiert die Entwicklung eines Stadtmodells, mit Fokus auf die Automatisierung der einzelnen Prozessschritte.
+Dieses Repository dokumentiert die Entwicklung eines Stadtmodells, mit Fokus auf die Automatisierung der einzelnen Prozessschritte mit Python.
 
-## 🗂 Projektstruktur
-**provisorisch**
-- `src/`: Enthält alle relevanten Skripte zur Datenverarbeitung, Analyse und Visualisierung.
-- `notebooks/`: Explorative Analysen und Prototypen.
-- `data/`: Eingabedaten (Hinweis: größere Dateien evtl. über externen Link zugänglich).
-- `results/`: Modelloutputs, Karten und Abbildungen.
-- `docs/`: Ergänzende Dokumentation und Konzepte.
+Die Gliederung des Repo's soll wie folgt nach Hierachie erfolgen:
+1. Arbeitspaket: Klassifizierung, Segmentierung, Abstrahierung, Rekonstruktion, Gis Integration
+2. Arbeitsschritt: # logische/nachvollziehbare Gliederung und Namen im Arbeitspaket
+3. Arbeitsgrundlage: # klare Struktur mit Input/Output, ev Markdown mit Erläuterungen, .py oder .ipynb-Dateien
+  
+## 📁 Projektstruktur
 
-```bash
-CodeBTh04/
+```text
+stadtmodell/
 │
-├── README.md
-├── .gitignore
-├── docs/                 # Zusatzdokumentation, evtl. PDF/MD
+├── README.md                    # Projektübersicht
+├── requirements.txt             # Python-Abhängigkeiten
+├── build-reqs.sh                # Script zum Erzeugen von requirements.txt
+│
+├── arbeitspakete/
+│   ├── 01_klassifizierung/
+│   │   ├── schritt_01_preprocessing/
+│   │   │   ├── input/              # Rohdaten
+│   │   │   ├── output/             # Ergebnisdaten
+│   │   │   ├── analyse.ipynb       # Notebook zur Analyse
+│   │   │   └── erklärung.md        # Beschreibung des Arbeitsschritts
+│   │   └── schritt_02_merkmale/
+│   │       ├── ...
+│   │
+│   ├── 02_segmentierung/
+│   │   ├── ...
+│   │
+│   ├── 03_abstrahierung/
+│   │   ├── ...
+│   │
+│   ├── 04_rekonstruktion/
+│   │   ├── ...
+│   │
+│   └── 05_gis_integration/
+│       ├── ...
+│
+├── notebooks/                   # Explorative Analysen außerhalb der AP-Struktur
+├── docs/                        # Dokumente, Konzept, ggf. Abbildungen
 │   └── konzept.md
-├──Klassifizierung
-  ├── data/                 # Input-Daten, z. B. GeoJSON, CSV etc. (oder verlinkt)
-  ├── src/                  # Quellcode
-  │   ├── preprocessing/    # Datenbereinigung, -transformation
-  │   ├── analysis/         # Auswerteskripte, Modelle etc.
-  │   └── visualization/    # Karten, Diagramme etc.
-  ├── notebooks/            # Jupyter Notebooks für Exploration / Prototypen
-  └── results/              # Outputs: Karten, Charts, Modelloutputs etc.
+├── data/                        # Zentrale Datenbasis (optional verlinkt)
+└── results/                     # Endergebnisse und Visualisierungen
 ```
 
 ## ⚙️ Setup
