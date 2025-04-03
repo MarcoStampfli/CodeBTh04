@@ -15,6 +15,14 @@ CodeBTh04/
 ├── README.md                    # Projektübersicht
 ├── requirements.txt             # Python-Abhängigkeiten
 ├── build-reqs.sh                # Script zum Erzeugen von requirements.txt
+|
+├── data/
+│   ├── input/              # Lokale Eingangsdaten (nicht versioniert)
+│   │   ├── README.md       # Infos zu erwarteten Dateien
+│   │   └── .gitkeep        # Platzhalter für leere Ordner
+│   └── external/           # Externe Datenquellen (optional)
+│       ├── README.md
+│       └── .gitkeep
 │
 ├── arbeitspakete/
 │   ├── 01_klassifizierung/
@@ -41,7 +49,6 @@ CodeBTh04/
 ├── notebooks/                   # Explorative Analysen außerhalb der AP-Struktur
 ├── docs/                        # Dokumente, Konzept, ggf. Abbildungen
 │   └── konzept.md
-├── data/                        # Zentrale Datenbasis (optional verlinkt)
 └── results/                     # Endergebnisse und Visualisierungen
 ```
 
