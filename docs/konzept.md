@@ -1,11 +1,3 @@
-# Konzept – Stadtmodell
+# 🧠 Konzept – Stadtmodell
 
-## Ziel
-
-Entwicklung eines digitalen Stadtmodells basierend auf Geodaten, strukturiert in Arbeitspaketen und modularen Arbeitsschritten.
-
-## Struktur
-
-Das Projekt folgt einer klaren Aufteilung in Arbeitspakete (z. B. Klassifizierung, Segmentierung) mit jeweils dokumentierten Zwischenschritten, Code und Ergebnissen.
-
-Weitere Infos folgen.
+Modulare Arbeitspaketstruktur zur Entwicklung eines digitalen Stadtmodells. Jeder Schritt ist dokumentiert, enthält Input-/Outputordner und Codebereiche.
