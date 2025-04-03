@@ -27,9 +27,10 @@ CodeBTh04/
 ├── arbeitspakete/
 │   ├── 01_klassifizierung/
 │   │   ├── schritt_01_preprocessing/
-│   │   │   ├── input/              # Rohdaten
+│   │   │   ├── input/              # Rohdaten/Ausgangsdaten für Arbeitsschritt
 │   │   │   ├── output/             # Ergebnisdaten
-│   │   │   ├── analyse.ipynb       # Notebook zur Analyse
+│   │   │   ├── PyCode/             # Ordner mit verschiedenen PyCodes
+│   │   │   ├── analyse.ipynb       # Notebook mit Code und Erläuterung
 │   │   │   └── erklärung.md        # Beschreibung des Arbeitsschritts
 │   │   └── schritt_02_merkmale/
 │   │       ├── ...
@@ -47,6 +48,10 @@ CodeBTh04/
 │       ├── ...
 │
 ├── notebooks/                   # Explorative Analysen außerhalb der AP-Struktur
+|    ├── JupyterNB/              # Alle Jupyter-Notebooks
+|    ├── PyCode/                 # Alle Python-Skripte
+|    └── Other/                  # Sonstige Skripte HTML
+|
 ├── docs/                        # Dokumente, Konzept, ggf. Abbildungen
 │   └── konzept.md
 └── results/                     # Endergebnisse und Visualisierungen
