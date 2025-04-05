@@ -1,12 +1,17 @@
 # CodeBTh04
+
 # Github Repo für die Bachelor Thesis Nr 04: Stadtmodel Basel 1960
+
 Dieses Repository dokumentiert die Entwicklung eines Stadtmodells, mit Fokus auf die Automatisierung der einzelnen Prozessschritte mit Python.
 
+Aufgrund der Datenmengen müssen die **Punktewolken** jeweils beim Benutzer **lokal** liegen. Dafür sind die Ordner input und output, jeweils pro Arbeitsschritt vorgesehen. Diese sind im .gitignor auskommentiert und werden auf Github nicht synchornisiert. Entsprechende Resultate sind zeitnah auf dem Server abzulegen.
+
 Die Gliederung des Repo's soll wie folgt nach Hierachie erfolgen:
+
 1. Arbeitspaket: Klassifizierung, Segmentierung, Abstrahierung, Rekonstruktion, Gis Integration
 2. Arbeitsschritt: # logische/nachvollziehbare Gliederung und Namen im Arbeitspaket
 3. Arbeitsgrundlage: # klare Struktur mit Input/Output, ev Markdown mit Erläuterungen, .py oder .ipynb-Dateien
-  
+
 ## 📁 Projektstruktur
 
 ```text
@@ -30,7 +35,7 @@ CodeBTh04/
 │   │   │   ├── input/              # Rohdaten/Ausgangsdaten für Arbeitsschritt
 │   │   │   ├── output/             # Ergebnisdaten
 │   │   │   ├── PyCode/             # Ordner mit verschiedenen PyCodes
-│   │   │   ├── analyse.ipynb       # Notebook mit Code und Erläuterung
+│   │   │   ├── analyse.ipynb       # Notebook mit "Clean" Code und Erläuterung
 │   │   │   └── erklärung.md        # Beschreibung des Arbeitsschritts
 │   │   └── schritt_02_merkmale/
 │   │       ├── ...
@@ -60,17 +65,20 @@ CodeBTh04/
 ## ⚙️ Setup
 
 1. Repository klonen:
+
    ```bash
    git clone https://github.com/MarcoStampfli/CodeBTh04.git
    cd CodeBTh04
    ```
 
 2. Virtual Enviorment erstellen:
+
    ```bash
    conda create --name env_bth04 python=3.9 -y
    ```
 
 3. Virtual Enviorment activieren:
+
    ```bash
    conda activate env_bth04
    ```
