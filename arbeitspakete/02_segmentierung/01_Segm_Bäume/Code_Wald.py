@@ -20,9 +20,10 @@ start_time = time.time()
 # -------------------------------------------
 # Parameterdefinition (Tuningmöglichkeiten)
 # -------------------------------------------
-res = 0.5            # [m] Rasterauflösung des CHM (=Zeitintensiv bei kleiner Aufl.!!!)
-min_distance = 5     # [Pixel] Mindestabstand für lokale Maxima
-sigma = 1.5          # [optional] Glättung des CHM (Gauss-Filter)
+res = 0.5              # [m] Rasterauflösung des CHM
+min_distance = 3.5     # [Pixel] Mindestabstand für lokale Maxima
+sigma = 0              # Gauss-Filter für Glättung (0 = keine)
+min_height = 2.0       # Mindesthöhe in CHM, um als Gipfel zu zählen
 # -------------------------------------------
 
 # ----------------------
@@ -36,7 +37,7 @@ print(f"Output-Ordner: {output_dir}")
 # 1. Punktwolke laden
 # ----------------------
 print("Lade Punktwolke ...")
-las = laspy.read(r"arbeitspakete\02_segmentierung\01_Segm_Bäume\input\PW_Baeume_o_Boden.las")  # <-- Datei hier anpassen
+las = laspy.read(r"arbeitspakete\02_segmentierung\01_Segm_Bäume\input\PW_Baeume_o_Boden.las")
 points = np.vstack((las.x, las.y, las.z)).T
 points = points[points[:, 2] > 2.0]
 print(f"Punkte nach Filter (>2 m): {points.shape[0]}")
@@ -55,9 +56,8 @@ chm_stat, _, _, _ = binned_statistic_2d(
     points[:, 1],  # Y
     points[:, 2],  # Z
     statistic='max',
-    bins=[x_bins, y_bins]
+    bins=[y_bins, x_bins]
 )
-
 chm = np.nan_to_num(chm_stat, nan=0)
 print(f"CHM: {x_bins} x {y_bins} Zellen, Auflösung {res} m")
 
@@ -66,8 +66,12 @@ print(f"CHM: {x_bins} x {y_bins} Zellen, Auflösung {res} m")
 # ----------------------
 print("Finde Baumgipfel ...")
 chm_smooth = ndi.gaussian_filter(chm, sigma=sigma)
-local_max = peak_local_max(chm_smooth, min_distance=min_distance, labels=chm > 0)
-print(f"Lokale Maxima: {len(local_max)}")
+local_max = peak_local_max(chm_smooth, min_distance=int(min_distance), labels=chm > 0)
+
+# Filtere nur Maxima mit ausreichender Höhe
+valid = chm[local_max[:, 0], local_max[:, 1]] > min_height
+local_max = local_max[valid]
+print(f"Lokale Maxima (gefiltert): {len(local_max)}")
 
 # ----------------------
 # 4. Watershed
@@ -121,31 +125,20 @@ print(f"CSV gespeichert: {csv_path} ({len(df)} Bäume)")
 # ----------------------
 print("Erzeuge CHM-Visualisierung ...")
 plt.figure(figsize=(10, 8))
-# plt.imshow(chm, cmap='terrain', origin='lower',
-#            extent=[x_min, x_max, y_min, y_max])
 plt.imshow(chm, cmap='viridis', origin='lower',
-           extent=[x_min, x_max, y_min, y_max])
-
+           extent=[x_min, x_max, y_min, y_max])  # <- ACHTUNG: richtige Reihenfolge
 
 # ACHTUNG: local_max ist in [Zeile, Spalte] = [Y, X]
-y_coords = y_min + local_max[:, 0] * res  # Zeile → Y
-x_coords = x_min + local_max[:, 1] * res  # Spalte → X
+y_coords = y_min + local_max[:, 0] * res
+x_coords = x_min + local_max[:, 1] * res
 
 plt.scatter(x_coords, y_coords, c='red', s=10, label="Baumgipfel")
 
-plt.title("CHM mit Baumgipfeln")
+plt.title("CHM mit Baumgipfeln (korrekte Koordinaten)")
 plt.colorbar(label='Höhe [m]')
 plt.legend()
 fig_path = os.path.join(output_dir, "chm_baumgipfel.png")
 plt.savefig(fig_path, dpi=300)
-
-# Laufzeit berechnen und ausgeben
-end_time = time.time()
-elapsed_time = end_time - start_time
-minutes = int(elapsed_time // 60)
-seconds = elapsed_time % 60
-print(f"Gesamtlaufzeit: {minutes} Minuten und {seconds:.2f} Sekunden")
-
 plt.show()
 print(f"CHM-Visualisierung gespeichert: {fig_path}")
 
@@ -166,3 +159,12 @@ for _, row in df.iterrows():
     sphere_list.append(sphere)
 
 o3d.visualization.draw_geometries([pcd] + sphere_list, window_name="Baumzentren (Watershed)")
+
+# ----------------------
+# 8. Laufzeit anzeigen
+# ----------------------
+end_time = time.time()
+elapsed_time = end_time - start_time
+minutes = int(elapsed_time // 60)
+seconds = elapsed_time % 60
+print(f"Gesamtlaufzeit: {minutes} Minuten und {seconds:.2f} Sekunden")
