@@ -8,14 +8,14 @@ import matplotlib.pyplot as plt
 import matplotlib.cm as cm
 
 # --- 1. Punktwolke laden ---
-las = laspy.read("deine_punktwolke.las")  # oder .laz
+las = laspy.read(r"arbeitspakete\02_segmentierung\01_Segm_Bäume\input\PW_Baeume_o_Boden.las")  # oder .laz
 points = np.vstack((las.x, las.y, las.z)).T
 
 # Optional: Filterung unterhalb 2 m (nur Baumkronen)
 vegetation = points[points[:, 2] > 2.0]
 
 # --- 2. DBSCAN-Clustering ---
-db = DBSCAN(eps=1.5, min_samples=30)
+db = DBSCAN(eps=1.5, min_samples=300) # eps= Abstand
 labels = db.fit_predict(vegetation)
 vegetation_with_labels = np.hstack((vegetation, labels[:, np.newaxis]))
 
