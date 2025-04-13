@@ -109,8 +109,8 @@ for region_label in tqdm(np.unique(labels), desc="Bäume analysieren"):
 
     tree_data.append({
         "Tree_ID": region_label,
-        "X": x,
-        "Y": y,
+        "N": x,
+        "E": y,
         "Height_m": round(height, 2),
         "Crown_Diameter_m": round(crown_diameter, 2)
     })

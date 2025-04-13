@@ -27,7 +27,7 @@ Datei: `Code_Wald.py`
 
 Code 2 kombiniert rasterbasierte Analyse mit Methoden der Bildverarbeitung, um aus Höheninformationen ein Canopy Height Model (CHM) zu generieren, Baumgipfel zu lokalisieren und Baumkronen mittels Watershed-Segmentierung zu trennen. Dies ist vorallem da hilfreich wo sich Baumkronen überlappen oder nahe beieinander stehen, das heisst in dichten Waldgebieten.
 
-8-tung: Code ist rechenintensiv und dauert... bei zu kleiner Rasterwahl
+8-tung: Code ist rechenintensiv und dauert... bei zu kleiner Rasterwahl (0.5= 7min/0.25=2h!)
 
 **Die Parameter:**
 ````Python
