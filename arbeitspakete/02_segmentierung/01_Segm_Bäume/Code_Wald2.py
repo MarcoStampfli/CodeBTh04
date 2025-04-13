@@ -1,6 +1,5 @@
 import os
 import time
-import laspy
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -34,13 +33,19 @@ os.makedirs(output_dir, exist_ok=True)
 print(f"Output-Ordner: {output_dir}")
 
 # ----------------------
-# 1. Punktwolke laden
+# 1. Punktwolke aus .txt laden
 # ----------------------
-print("Lade Punktwolke ...")
-las = laspy.read(r"arbeitspakete\02_segmentierung\01_Segm_Bäume\input\PW_Baeume_o_Boden.las")
-points = np.vstack((las.x, las.y, las.z)).T
-points = points[points[:, 2] > 2.0]
-print(f"Punkte nach Filter (>2 m): {points.shape[0]}")
+print("Lade Punktwolke aus TXT-Datei ...")
+txt_path = r"arbeitspakete\02_segmentierung\01_Segm_Bäume\input\PW_Baeume_o_Boden.txt"
+
+# Lies Datei ein – ohne Header, Spalten: X Y Z (Leerzeichen oder Tab getrennt)
+df_txt = pd.read_csv(txt_path, delimiter= ";", decimal= ".", header=None)
+df_txt.columns = ['X', 'Y', 'Z']
+points = df_txt[['X', 'Y', 'Z']].values
+
+# Optionaler Höhenfilter
+points = points[points[:, 2] > min_height]
+print(f"Punkte nach Höhenfilter (> {min_height} m): {points.shape[0]}")
 
 # ----------------------
 # 2. CHM erstellen
@@ -51,6 +56,7 @@ y_min, y_max = points[:, 1].min(), points[:, 1].max()
 x_bins = int(np.ceil((x_max - x_min) / res))
 y_bins = int(np.ceil((y_max - y_min) / res))
 
+# ACHTUNG: Reihenfolge der Bins [y_bins, x_bins] ist wichtig!
 chm_stat, _, _, _ = binned_statistic_2d(
     points[:, 0],  # X
     points[:, 1],  # Y
@@ -126,12 +132,10 @@ print(f"CSV gespeichert: {csv_path} ({len(df)} Bäume)")
 print("Erzeuge CHM-Visualisierung ...")
 plt.figure(figsize=(10, 8))
 plt.imshow(chm, cmap='viridis', origin='lower',
-           extent=[x_min, x_max, y_min, y_max])  # <- ACHTUNG: richtige Reihenfolge
+           extent=[x_min, x_max, y_min, y_max])
 
-# ACHTUNG: local_max ist in [Zeile, Spalte] = [Y, X]
 y_coords = y_min + local_max[:, 0] * res
 x_coords = x_min + local_max[:, 1] * res
-
 plt.scatter(x_coords, y_coords, c='red', s=10, label="Baumgipfel")
 
 plt.title("CHM mit Baumgipfeln (korrekte Koordinaten)")

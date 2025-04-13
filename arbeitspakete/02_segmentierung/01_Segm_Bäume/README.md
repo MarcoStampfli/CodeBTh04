@@ -27,31 +27,17 @@ Datei: `Code_Wald.py`
 
 Code 2 kombiniert rasterbasierte Analyse mit Methoden der Bildverarbeitung, um aus Höheninformationen ein Canopy Height Model (CHM) zu generieren, Baumgipfel zu lokalisieren und Baumkronen mittels Watershed-Segmentierung zu trennen. Dies ist vorallem da hilfreich wo sich Baumkronen überlappen oder nahe beieinander stehen, das heisst in dichten Waldgebieten.
 
-8-tung: Code ist rechenintensiv und dauert...
+8-tung: Code ist rechenintensiv und dauert... bei zu kleiner Rasterwahl
 
 **Die Parameter:**
-
-`res` = Rasterauflösung des CHM's
-
-`min_distance` = mindest Abstand der Peaks (Baumspitzen)
-
-`sigma` = Glätungsindex für Gauss-Filter
-
 ````Python
-Output-Ordner: output
-Lade Punktwolke ...
-Anzahl Punkte nach Filter (>2 m): 7525918
-Erzeuge Canopy Height Model (CHM) ...
-CHM erstellt (5610 x 4036 Zellen, Auflösung 0.25 m)
-Suche lokale Maxima ...
-Gefundene Baumgipfel: 31931
-Starte Watershed-Segmentierung ...
-Segmentierte Baumregionen: 31931
-Extrahiere Baumdaten ...
-Analysiere Bäume: 100%|███████████████████████████████████████████████████████████████████████████| 31932/31932 [2:07:22<00:00,  4.18it/s]   
-Baumdaten gespeichert in: output\baumdaten_watershed.csv (21447 Bäume)
-Gesamtlaufzeit: 127 Minuten und 32.83 Sekunden  
-Erzeuge 2D-Visualisierung (CHM + Baumgipfel) ...
-Visualisierung gespeichert in: output\chm_baumgipfel.png
-Starte Open3D-Visualisierung ...
+res = 0.5              # [m] CHM Rasterauflösung
+min_distance = 3.5     # [Pixel] Abstand lokaler Maxima
+sigma = 1.0            # Glättung (Gauss-Filter)
+min_height = 2.0       # Mindesthöhe für Punkte
+eps = 1.5              # DBSCAN: Radius
+min_samples = 15       # DBSCAN: Mindestpunkte pro Cluster
+diameter_min = 1.5     # [m] minimaler Kronendurchmesser
+diameter_max = 10.0    # [m] maximaler Kronendurchmesser
 ````
+

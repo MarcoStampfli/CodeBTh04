@@ -7,9 +7,18 @@ import open3d as o3d
 import matplotlib.pyplot as plt
 import matplotlib.cm as cm
 
-# --- 1. Punktwolke laden ---
-las = laspy.read(r"arbeitspakete\02_segmentierung\01_Segm_Bäume\input\PW_Baeume_o_Boden.las")  # oder .laz
-points = np.vstack((las.x, las.y, las.z)).T
+# Aus Cyclone 3Dr: Bäume haben rund 400-2500 Punkte
+# ----------------------
+# 1. Punktwolke laden (TXT)
+# ----------------------
+print("Lade Punktwolke ...")
+txt_path = r"arbeitspakete\02_segmentierung\01_Segm_Bäume\input\PW_Baeume_o_Boden_o_Rauschen.txt"
+df_txt = pd.read_csv(txt_path, delimiter= ";", decimal= ".", header=None)
+df_txt.columns = ['X', 'Y', 'Z']
+points = df_txt[['X', 'Y', 'Z']].values
+# # --- 1. Punktwolke laden ---
+# las = laspy.read(r"arbeitspakete\02_segmentierung\01_Segm_Bäume\input\PW_Baeume_o_Boden.las")  # oder .laz
+# points = np.vstack((las.x, las.y, las.z)).T
 
 # Optional: Filterung unterhalb 2 m (nur Baumkronen)
 vegetation = points[points[:, 2] > 2.0]
