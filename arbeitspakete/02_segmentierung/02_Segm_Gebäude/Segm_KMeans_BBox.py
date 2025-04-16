@@ -79,7 +79,7 @@ print("[1] Lese Daten ein...")
 data_read_start = time.time()
 print("Starte KMeans-Vorsegmentierung...")
 kmeans = KMeans(n_clusters=num_kmeans_clusters, random_state=42, n_init=10)
-predict = ["X coordinate", "Y coordinate", "Z coordinate", "Hue (0-1)", "Z scan dir"] # Kmeans Klasseneigenschaften
+predict = ["X coordinate", "Y coordinate", "Z scan dir"] # Kmeans Klasseneigenschaften
 df["Color Cluster"] = kmeans.fit_predict(df[predict])
 log_lines.append(f"Eigenschaften KMeans-Cluster: {predict}")
 
