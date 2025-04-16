@@ -17,7 +17,7 @@ num_kmeans_clusters = 100
 num_reclump_clusters = 25
 
 # Parametters DBScan
-eps=5          # Suchradius in Metern 
+eps=10          # Suchradius in Metern 
 min_samples=2   # min. Cluster zusammen mergen
 
 code = "XY"

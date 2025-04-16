@@ -2,6 +2,7 @@
 
 import pandas as pd
 import numpy as np
+import time
 from tqdm import tqdm
 import os
 import matplotlib.pyplot as plt
@@ -14,12 +15,10 @@ import networkx as nx
 from shapely.geometry import Polygon
 
 # === Parameter ===
-# input_path = r"arbeitspakete\02_segmentierung\02_Segm_Gebäude\input\P3A1_Gebaeude.txt"
-# num_kmeans_clusters = 150 # falls Gebàude noch zusammen, dann héher gehen
 input_path = r"arbeitspakete\02_segmentierung\02_Segm_Gebäude\input\Input__PW_Klasse_13_kmeans_normalisiert.txt"
-num_kmeans_clusters = 5000 # falls Gebàude noch zusammen, dann héher gehen
-#num_reclump_clusters = 15
-code = f"Seg_P3K13_KMeans_{num_kmeans_clusters}_OBB_ReClump_"
+num_kmeans_clusters = 2000
+# num_reclump_clusters = 15
+code = "XX"
 
 # === Hilfsfunktion: PCA-ausgerichtete OBB ===
 def get_pca_aligned_obb(points_np):
@@ -54,31 +53,58 @@ def get_pca_aligned_obb(points_np):
     obb = o3d.geometry.OrientedBoundingBox(obb_center, R, extent)
     return obb
 
-# === Daten einlesen ===
+# === Zeitmessung und Fortschritt ===
+# Laufzeiten und Parameterwerte speichern
+log_lines = []
+log_lines.append(f"Input-Datei: {input_path}")
+log_lines.append(f"Anzahl KMeans-Cluster: {num_kmeans_clusters}")
+log_lines.append(f"Code-Präfix: {code}")
+start_time_total = time.time()
+
 df = pd.read_csv(input_path, delimiter=";", decimal=".", header=None)
+
+# === Nur rechten unteren Quadranten der Punktwolke verwenden ===
+min_x, max_x = df[0].min(), df[0].max()
+min_y, max_y = df[1].min(), df[1].max()
+
+# Filter: X > Mittelwert, Y < Mittelwert => rechts unten
+df = df[(df[0] > (min_x + max_x) / 2) & (df[1] < (min_y + max_y) / 2)]
+
 df.columns = ["X coordinate", "Y coordinate", "Z coordinate",
               "Red color (0-1)", "Green color (0-1)", "Blue color (0-1)",
               "Hue (0-1)", "Saturation (0-1)", "Value (0-1)",
               "X scan dir", "Y scan dir", "Z scan dir"]
 
-# === KMeans Clustering ===
+print("[1] Lese Daten ein...")
+data_read_start = time.time()
 print("Starte KMeans-Vorsegmentierung...")
 kmeans = KMeans(n_clusters=num_kmeans_clusters, random_state=42, n_init=10)
-df["Color Cluster"] = kmeans.fit_predict(df[["X coordinate", "Y coordinate", "Z coordinate", "Hue (0-1)", "Z scan dir"]])
+predict = ["X coordinate", "Y coordinate", "Z coordinate", "Hue (0-1)", "Z scan dir"] # Kmeans Klasseneigenschaften
+df["Color Cluster"] = kmeans.fit_predict(df[predict])
+log_lines.append(f"Eigenschaften KMeans-Cluster: {predict}")
 
-# === OBB-Berechnung ===
+duration = time.time() - data_read_start
+print(f"-> Daten eingelesen in {duration:.2f} Sekunden")
+log_lines.append(f"Daten einlesen: {duration:.2f} Sekunden")
+
+print("[2] Starte KMeans-Vorsegmentierung...")
+kmeans_start = time.time()
 cluster_ids = sorted(df["Color Cluster"].unique())
 cluster_features = []
 cluster_obb = {}
-for cid in cluster_ids:
+for cid in tqdm(cluster_ids, desc="OBBs"):
     points_np = df[df["Color Cluster"] == cid][["X coordinate", "Y coordinate", "Z coordinate"]].to_numpy()
     centroid = points_np.mean(axis=0)
     cluster_features.append(centroid)
     obb = get_pca_aligned_obb(points_np)
     cluster_obb[cid] = obb
-cluster_features = np.array(cluster_features)
 
-# === Reclumping via 2D-Intersection (Shapely) ===
+duration = time.time() - kmeans_start
+print(f"-> KMeans abgeschlossen in {duration:.2f} Sekunden")
+log_lines.append(f"KMeans-Clustering: {duration:.2f} Sekunden")
+
+print("[3] Berechne OBBs mit PCA...")
+obb_start = time.time()
 def obb_intersects(obb1, obb2):
     try:
         poly1 = np.array(obb1.get_box_points())[:, :2]
@@ -88,7 +114,7 @@ def obb_intersects(obb1, obb2):
         return False
 
 G = nx.Graph()
-for i, cid1 in enumerate(cluster_ids):
+for i, cid1 in enumerate(tqdm(cluster_ids, desc="Cluster Adjazenzprüfung")):
     obb1 = cluster_obb[cid1]
     for j in range(i + 1, len(cluster_ids)):
         cid2 = cluster_ids[j]
@@ -102,12 +128,21 @@ for label, comp in enumerate(components):
     for cid in comp:
         reclump_labels_graph[cid] = label
 
-df["Reclump_Adjazenz"] = df["Color Cluster"].map(reclump_labels_graph).fillna(-1).astype(int)
+duration = time.time() - obb_start
+print(f"-> OBB-Berechnung abgeschlossen in {duration:.2f} Sekunden")
+log_lines.append(f"OBB-Berechnung: {duration:.2f} Sekunden")
+cluster_features = np.array(cluster_features)
 
-# === Visualisierung ===
+print("[4] Starte Reclumping basierend auf OBB-Überlappung...")
+reclump_start = time.time()
 def obb_to_lineset(obb, color=(1, 0, 0)):
     obb.color = color
     return obb
+
+df["Reclump_Adjazenz"] = df["Color Cluster"].map(reclump_labels_graph).fillna(-1).astype(int)
+duration = time.time() - reclump_start
+print(f"-> Reclumping abgeschlossen in {duration:.2f} Sekunden")
+log_lines.append(f"Reclumping (Adjazenzanalyse): {duration:.2f} Sekunden")
 
 def show_obb_boxes_colored(df, cluster_obb, reclump_labels):
     geometries = []
@@ -130,14 +165,14 @@ def show_obb_boxes_colored(df, cluster_obb, reclump_labels):
     o3d.visualization.draw_geometries(geometries, window_name="PCA-OBB Cluster")
 
 # === Visualisierung speichern ===
-output_dir = r"arbeitspakete\02_segmentierung\02_Segm_Gebäude\output"
+output_dir = "KMeans_BBox_output"
 os.makedirs(output_dir, exist_ok=True)
 
 # 1. Vor Clustering: Punktwolke grau
 pcd_raw = o3d.geometry.PointCloud()
 pcd_raw.points = o3d.utility.Vector3dVector(df[["X coordinate", "Y coordinate", "Z coordinate"]].to_numpy())
 pcd_raw.paint_uniform_color([0.5, 0.5, 0.5])
-# o3d.io.write_point_cloud(os.path.join(output_dir, f"{code}01_raw_punktwolke.ply"), pcd_raw)
+# o3d.io.write_point_cloud(os.path.join(output_dir, "01_raw_punktwolke.ply"), pcd_raw)
 
 # 2. Farbige OBBs speichern als .ply mit Linien
 geometries = []
@@ -149,7 +184,7 @@ for cid, obb in cluster_obb.items():
     line_obb = obb_to_lineset(obb, color=color)
     geometries.append(line_obb)
 
-# o3d.io.write_line_sets(os.path.join(output_dir, f"{code}02_colored_OBBs.ply"), geometries)
+# o3d.io.write_line_sets(os.path.join(output_dir, "02_colored_OBBs.ply"), geometries)
 
 # 3. Clustering-Resultat als eingefärbte Punktwolke
 labels = df["Reclump_Adjazenz"].to_numpy()
@@ -158,10 +193,10 @@ colors = plt.cm.jet(norm_labels)[:, :3]
 pcd_clustered = o3d.geometry.PointCloud()
 pcd_clustered.points = o3d.utility.Vector3dVector(df[["X coordinate", "Y coordinate", "Z coordinate"]].to_numpy())
 pcd_clustered.colors = o3d.utility.Vector3dVector(colors)
-# o3d.io.write_point_cloud(os.path.join(output_dir, f"{code}03_clustered_points.ply"), pcd_clustered)
+# o3d.io.write_point_cloud(os.path.join(output_dir, "03_clustered_points.ply"), pcd_clustered)
 
 # 4. Punktwolken pro Cluster-ID speichern
-# cluster_dir = os.path.join(output_dir, f"cluster_csv_{code}")
+# cluster_dir = os.path.join(output_dir, "cluster_csv")
 # os.makedirs(cluster_dir, exist_ok=True)
 # for cluster_id in sorted(df["Reclump_Adjazenz"].unique()):
 #     df[df["Reclump_Adjazenz"] == cluster_id].to_csv(
@@ -170,7 +205,7 @@ pcd_clustered.colors = o3d.utility.Vector3dVector(colors)
 # 5. Komplette Punktwolke mit Cluster-ID als Spalte "ID"
 df_with_id = df.copy()
 df_with_id.rename(columns={"Reclump_Adjazenz": "ID"}, inplace=True)
-# df_with_id.to_csv(os.path.join(output_dir, f"{code}04_punktwolke_mit_ID.csv"), sep=";", index=False, decimal=".")
+df_with_id.to_csv(os.path.join(output_dir, "04_punktwolke_mit_ID.csv"), sep=";", index=False, decimal=".")
 
 # === Screenshot-Funktion ===
 def take_screenshot(geometries, filename):
@@ -191,9 +226,9 @@ colors_kmeans = plt.cm.jet(norm_kmeans)[:, :3]
 pcd_kmeans = o3d.geometry.PointCloud()
 pcd_kmeans.points = o3d.utility.Vector3dVector(df[["X coordinate", "Y coordinate", "Z coordinate"]].to_numpy())
 pcd_kmeans.colors = o3d.utility.Vector3dVector(colors_kmeans)
-take_screenshot([pcd_kmeans], f"{code}screenshot_00_kmeans_clustering.png")
+take_screenshot([pcd_kmeans], "screenshot_00_kmeans_clustering.png")
 # Screenshot 1: raw point cloud
-take_screenshot([pcd_raw], f"{code}screenshot_01_raw.png")
+take_screenshot([pcd_raw], "screenshot_01_raw.png")
 
 # Screenshot 2: clustered colored boxes + points
 geometries = []
@@ -204,7 +239,16 @@ for cid, obb in cluster_obb.items():
     geometries.append(line_obb)
 
 geometries.append(pcd_clustered)
-take_screenshot(geometries, f"{code}screenshot_02_clustered.png")
+take_screenshot(geometries, "screenshot_02_clustered.png")
+
+print("[5] Visualisierung abgeschlossen.")
+end_time_total = time.time()
+duration = end_time_total - start_time_total
+print(f"✅ Gesamtlaufzeit: {duration:.2f} Sekunden")
+log_lines.append(f"Gesamtlaufzeit: {duration:.2f} Sekunden")
+
+with open(os.path.join(output_dir, "laufzeit_log.txt"), "w") as f:
+    f.write("".join(log_lines))
 
 # === Anzeige im Open3D-Fenster ausgewählter Zustände ===
 print("Zeige Open3D Viewer für:")
