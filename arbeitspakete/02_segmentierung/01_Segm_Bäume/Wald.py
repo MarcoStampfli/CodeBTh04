@@ -22,16 +22,17 @@ start_time = time.time()
 # -------------------------------------------
 # Parameterdefinition (Tuningmöglichkeiten)
 # -------------------------------------------
-res = 0.5              # [m] CHM Rasterauflösung
+res = 0.5            # [m] CHM Rasterauflösung
 min_distance = 3    # [Pixel] Abstand lokaler Maxima (Zusammenfassen der Maximas auf einem Baum)
-sigma = 1            # Glättung (Gauss-Filter)
+sigma = 0            # Glättung (Gauss-Filter)
 min_height = 2      # Mindesthöhe für Punkte
-eps = 2              # DBSCAN: Radius
-min_samples = 200       # DBSCAN: Mindestpunkte pro Cluster
-diameter_min = 2.5     # [m] minimaler Kronendurchmesser
+eps = 3              # DBSCAN: Radius
+min_samples = 200   # DBSCAN: Mindestpunkte pro Cluster
+diameter_min = 2.5    # [m] minimaler Kronendurchmesser
 diameter_max = 11   # [m] maximaler Kronendurchmesser
 # -------------------------------------------
-RunID = 3
+datum = 20250426
+RunID = f"{datum}_Parameter_res{res}_minPix{min_distance}_sig{sigma}_minH{min_height}_eps{eps}_minSam{min_samples}_DM{diameter_min}bis{diameter_max}"
 # ----------------------
 # 0. Output-Ordner
 # ----------------------
@@ -43,7 +44,7 @@ print(f"Output-Ordner: {output_dir}")
 # 1. Punktwolke laden (TXT)
 # ----------------------
 print("Lade Punktwolke ...")
-txt_path = r"arbeitspakete\02_segmentierung\01_Segm_Bäume\input\PW_Baeume_o_Boden.txt"
+txt_path = r"arbeitspakete\02_segmentierung\01_Segm_Bäume\input\PW_Baeume_o_Boden_o_Rauschen.txt"
 df_txt = pd.read_csv(txt_path, delimiter= ";", decimal= ".", header=None)
 df_txt.columns = ['X', 'Y', 'Z']
 points = df_txt[['X', 'Y', 'Z']].values
@@ -90,8 +91,11 @@ y_bins = int(np.ceil((y_max - y_min) / res))
 
 # ACHTUNG: Bins [y, x] Reihenfolge wichtig
 chm_stat, _, _, _ = binned_statistic_2d(
-    filtered_points[:, 0], filtered_points[:, 1], filtered_points[:, 2],
-    statistic='max', bins=[y_bins, x_bins]
+    filtered_points[:, 0], 
+    filtered_points[:, 1], 
+    filtered_points[:, 2],
+    statistic='max', 
+    bins=[y_bins, x_bins]
 )
 chm = np.nan_to_num(chm_stat, nan=0)
 
@@ -102,14 +106,14 @@ print("Suche Baumgipfel ...")
 chm_smooth = ndi.gaussian_filter(chm, sigma=sigma)
 local_max = peak_local_max(chm_smooth, min_distance=int(min_distance), labels=chm > 0)
 
-valid = chm[local_max[:, 0], local_max[:, 1]] > 3
+valid = chm[local_max[:, 0], local_max[:, 1]] > min_height
 local_max = local_max[valid]
 print(f"Lokale Maxima (gefiltert): {len(local_max)}")
 
 # ----------------------
 # 5. Watershed-Segmentierung
 # ----------------------
-print("Starte Watershed ...")
+print("Segmentiere Kronen mit Watershed ...")
 markers = np.zeros_like(chm, dtype=int)
 for i, coord in enumerate(local_max):
     markers[coord[0], coord[1]] = i + 1
@@ -137,12 +141,6 @@ for region_label in tqdm(np.unique(labels), desc="Bäume analysieren"):
     crown_diameter = np.sqrt(4 * crown_area / np.pi)
 
     cy, cx = center_of_mass(mask)
-    # # Schritt 1: Spiegelung an X
-    # y_spiegel = y_max - cy * res
-
-    # # Schritt 2: 
-    # y = y_spiegel                  
-    # x = x_min + cx * res 
     y = y_min + cy * res
     x = x_min + cx * res          
 
@@ -167,12 +165,12 @@ plt.figure(figsize=(10, 8))
 plt.imshow(chm, cmap='viridis', origin='lower',
            extent=[x_min, x_max, y_min, y_max])
 
-# Neue Koordinatenberechnung – passend zur Extraktion (Spiegelung + Drehung)
-x_coords = y_max - local_max[:, 0] * res  # Zeile → Y → gespiegelt → X
-y_coords = x_min + local_max[:, 1] * res  # Spalte → X → zu Y
+# Neue Koordinatenberechnung – passend zur Extraktion
+x_coords = y_max - local_max[:, 0] * res 
+y_coords = x_min + local_max[:, 1] * res  
 
 plt.scatter(x_coords, y_coords, c='red', s=10, label="Baumgipfel")
-plt.title("CHM mit Baumgipfeln (angepasst)")
+plt.title("CHM mit Baumgipfeln")
 plt.colorbar(label='Höhe [m]')
 plt.legend()
 fig_path = os.path.join(output_dir, f"chm_baumgipfel_RunID_{RunID}.png")
