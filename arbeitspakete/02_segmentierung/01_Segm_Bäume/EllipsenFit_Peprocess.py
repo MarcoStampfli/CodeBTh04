@@ -5,6 +5,8 @@ import matplotlib.pyplot as plt
 import open3d as o3d
 import time
 
+# Dieser Code hat nicht funktioniert
+
 datei = r"arbeitspakete\02_segmentierung\01_Segm_Bäume\input\2097_Export_PW_Ellipsenfit_normalisiert.txt"
 start = time.time()
 # Punktwolke laden
