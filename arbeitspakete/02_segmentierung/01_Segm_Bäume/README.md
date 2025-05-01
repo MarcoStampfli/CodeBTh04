@@ -41,3 +41,12 @@ diameter_min = 1.5     # [m] minimaler Kronendurchmesser
 diameter_max = 10.0    # [m] maximaler Kronendurchmesser
 ````
 
+**Output**
+
+| Tree_ID | E (Ostwert) | N (Nordwert) | Height_m | Crown_Diameter_m |
+|---------|-------------|--------------|----------|------------------|
+| 1       | 2613263.90  | 1266088.97   | 290.66   | 2.65             |
+| 2       | 2612151.84  | 1266080.35   | 289.57   | 7.65             |
+
+
+

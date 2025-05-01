@@ -2,76 +2,192 @@
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
+import time
+import os
 
-def plot_centroid_variants_from_index(txt_path, index_csv_path, res):
+def zeit(start, stop=None, msg=str("")):
     """
-    Vergleicht vier Varianten (original, flip_x, flip_y, flip_xy) der Rücktransformation
-    von Baumgipfel-Index-Koordinaten zu Weltkoordinaten auf Basis der Punktwolke.
+    Rechnet Prozesszeiten aus und macht ein Console-Log
+
+    Parameter:
+    start = start der Zeitmessung
+    stop = time.time() "aktuelle Zeit" wenn nicht sonnst definiert
+    msg = str mit Log-text
     """
-    print("Lade Punktwolke ...")
-    df_pts = pd.read_csv(txt_path, delimiter=";", header=None, names=["X", "Y", "Z"])
-    df_pts = df_pts[df_pts["Z"] > 2.0]
-
-    # Koordinatenbereich berechnen
-    x_min, x_max = df_pts["X"].min(), df_pts["X"].max()
-    y_min, y_max = df_pts["Y"].min(), df_pts["Y"].max()
-
-    print("Lade Baumgipfel-Index ...")
-    df_idx = pd.read_csv(index_csv_path)  # erwartet Spalten: cy, cx
-    local_max = df_idx[["cy", "cx"]].values
-
-    variants = {
-        "original": lambda cy, cx: (x_min + cx * res, y_min + cy * res),
-        "flip_x":   lambda cy, cx: (x_max - cx * res, y_min + cy * res),
-        "flip_y":   lambda cy, cx: (x_min + cx * res, y_max - cy * res),
-        "flip_xy":  lambda cy, cx: (x_max - cx * res, y_max - cy * res),
-    }
-
-    fig, axs = plt.subplots(2, 2, figsize=(14, 12))
-    axs = axs.ravel()
-
-    for i, (name, transform) in enumerate(variants.items()):
-        x_coords, y_coords = [], []
-        for cy, cx in local_max:
-            x, y = transform(cy, cx)
-            x_coords.append(x)
-            y_coords.append(y)
-
-        axs[i].scatter(df_pts["X"], df_pts["Y"], s=0.2, color='green', label="Punktwolke")
-        axs[i].scatter(x_coords, y_coords, s=6, color='orange', label=f"Gipfel ({name})")
-        axs[i].set_title(f"Variante: {name}")
-        axs[i].set_xlabel("Easting [m]")
-        axs[i].set_ylabel("Northing [m]")
-        axs[i].axis('equal')
-        axs[i].legend()
-
-    plt.suptitle("Vergleich der Rücktransformationen der Baumgipfel", fontsize=16)
-    plt.tight_layout()
-    plt.show()
+    if stop is None:
+        stop = time.time()
+    elapsed_time = stop - start
+    minutes = int(elapsed_time // 60)
+    seconds = elapsed_time % 60
+    print(f"{msg}Dauer: {minutes} Minuten und {seconds:.2f} Sekunden")
+    return stop
 
 
-def verify_tree_positions(txt_path, csv_path, height_filter=2.0):
+def verify_tree_positions(output_dir, txt_path, csv_path, height_filter=int(4)):
     """
     Prüft, ob die Baumkataster-Koordinaten korrekt auf die Punktwolke passen.
-    
+
+    Parameter:
+    output_dir : Zielordner zum speichern
     txt_path : Pfad zur Punktwolke als .txt mit Spalten X Y Z (Easting, Northing, Höhe)
-    csv_path : Pfad zur baumdaten_watershed.csv mit Spalten X, Y
+    csv_path : Pfad zur baumdaten_watershed.csv mit Spalten ID E N H DM
+    height_filter : nur hohe Punkte anzeigen (Visualisierung)
     """
     print("Lade Punktwolke ...")
     df_pts = pd.read_csv(txt_path, delimiter=";", header=None, names=["X", "Y", "Z"])
     df_pts = df_pts[df_pts["Z"] > height_filter]  # nur hohe Punkte anzeigen
 
     print("Lade Baumdaten ...")
-    df_trees = pd.read_csv(csv_path)
+    df_trees = pd.read_csv(csv_path, delimiter=",",header=0,names=["Tree_ID","E","N","Height_m","Crown_Diameter_m"])
 
     print("Erzeuge Plot ...")
     plt.figure(figsize=(10, 10))
     plt.scatter(df_pts["X"], df_pts["Y"], s=0.2, c='green', label="Punktwolke")
-    plt.scatter(df_trees["X"], df_trees["Y"], s=8, c='orange', label="Baumkataster")
+    plt.scatter(df_trees["E"], df_trees["N"], s=8, c='orange', label="Baumkataster")
     plt.xlabel("Easting [m]")
     plt.ylabel("Northing [m]")
     plt.legend()
     plt.axis('equal')
     plt.title("Verifikation: Baumkataster über Punktwolke")
-    plt.grid(True)
-    plt.show()
+    plt.grid(False)
+    file_path = os.path.join(output_dir, "step0_PW_vs_Kataster.png")
+    plt.savefig(file_path, dpi=300)
+    # plt.show()
+    plt.close()
+
+
+def visualize_processing_steps(filtered_points, filtered_labels, chm, chm_smooth, local_max, labels_ws, output_dir, df=None, x_min=None, x_max=None, y_min=None, y_max=None, res=1, RunID=""):
+    """
+    Erstellt und speichert Visualisierungen der wichtigsten Prozessschritte:
+    1. Punktwolke
+    2. DBSCAN-Cluster
+    3. CHM
+    4. Lokale Maxima
+    5. Watershed-Segmente
+    6. Small Multiples (alle Schritte nebeneinander)
+    7. CHM + Baumgipfel farbcodiert nach Kronendurchmesser (optional, wenn df übergeben wird)
+    """
+    import matplotlib.pyplot as plt
+    import numpy as np
+    import os
+    from skimage.color import label2rgb
+
+    # -------- 1. Punktwolke --------
+    fig1 = plt.figure(figsize=(6, 5))
+    plt.scatter(filtered_points[:, 0], filtered_points[:, 1], c=filtered_points[:, 2], cmap='viridis', s=1)
+    plt.title("1. Gefilterte Punktwolke")
+    plt.xlabel("X")
+    plt.ylabel("Y")
+    plt.colorbar(label='Höhe [m]')
+    plt.tight_layout()
+    step1_path = os.path.join(output_dir, "step1_pointcloud.png")
+    plt.savefig(step1_path, dpi=200)
+    plt.close()
+    print(f"Punktwolke gespeichert: {step1_path}")
+
+    # -------- 2. DBSCAN Clustering --------
+    fig2 = plt.figure(figsize=(6, 5))
+    if len(filtered_labels) == len(filtered_points):
+        plt.scatter(filtered_points[:, 0], filtered_points[:, 1], c=filtered_labels, cmap='tab20', s=1)
+    else:
+        plt.scatter(filtered_points[:, 0], filtered_points[:, 1], c='gray', s=1)
+        print("[WARNUNG] Clusterlabels stimmen nicht mit Punktanzahl überein – Darstellung in Grau.")
+    plt.title("2. DBSCAN-Clustering")
+    plt.xlabel("X")
+    plt.ylabel("Y")
+    plt.tight_layout()
+    step2_path = os.path.join(output_dir, "step2_dbscan.png")
+    plt.savefig(step2_path, dpi=200)
+    plt.close()
+    print(f"DBSCAN gespeichert: {step2_path}")
+
+    # -------- 3. CHM --------
+    fig3 = plt.figure(figsize=(6, 5))
+    plt.imshow(chm.T, cmap='terrain', origin='lower')
+    plt.title("3. Canopy Height Model (CHM)")
+    plt.xlabel("X")
+    plt.ylabel("Y")
+    plt.colorbar(label='Höhe [m]')
+    plt.tight_layout()
+    step3_path = os.path.join(output_dir, "step3_chm.png")
+    plt.savefig(step3_path, dpi=200)
+    plt.close()
+    print(f"CHM gespeichert: {step3_path}")
+
+    # -------- 4. Lokale Maxima --------
+    fig4 = plt.figure(figsize=(6, 5))
+    plt.imshow(chm_smooth.T, cmap='terrain', origin='lower')
+    lx = local_max[:, 0]
+    ly = local_max[:, 1]
+    plt.scatter(lx, ly, c='red', s=2)
+    plt.title("4. Lokale Maxima im CHM")
+    plt.xlabel("X")
+    plt.ylabel("Y")
+    plt.tight_layout()
+    step4_path = os.path.join(output_dir, "step4_maxima.png")
+    plt.savefig(step4_path, dpi=200)
+    plt.close()
+    print(f"Maxima gespeichert: {step4_path}")
+
+    # -------- 5. Watershed Segmente --------
+    fig5 = plt.figure(figsize=(6, 5))
+    plt.imshow(label2rgb(labels_ws.T, bg_label=0), origin='lower')
+    plt.title("5. Watershed-Segmente")
+    plt.xlabel("X")
+    plt.ylabel("Y")
+    plt.tight_layout()
+    step5_path = os.path.join(output_dir, "step5_watershed.png")
+    plt.savefig(step5_path, dpi=200)
+    plt.close()
+    print(f"Segmente gespeichert: {step5_path}")
+
+    # -------- 6. Small Multiples --------
+    fig, axes = plt.subplots(1, 5, figsize=(25, 5))
+    step_files = [
+        ("step1_pointcloud.png", "Punktwolke"),
+        ("step2_dbscan.png", "DBSCAN"),
+        ("step3_chm.png", "CHM"),
+        ("step4_maxima.png", "Maxima"),
+        ("step5_watershed.png", "Segmente")
+    ]
+    for ax, (filename, title) in zip(axes, step_files):
+        img = plt.imread(os.path.join(output_dir, filename))
+        ax.imshow(img)
+        ax.set_title(title, fontsize=10)
+        ax.axis('off')
+
+    plt.tight_layout()
+    all_path = os.path.join(output_dir, "step_all_small_multiples.png")
+    plt.savefig(all_path, dpi=200)
+    plt.close()
+    print(f"Small Multiples gespeichert: {all_path}")
+
+        # -------- 7. CHM mit Baumgipfeln (Durchmesserfarben) --------
+    if df is not None and x_min is not None and y_min is not None:
+        print("Visualisiere CHM + Baumgipfel (farblich nach Kronendurchmesser) ...")
+        fig7 = plt.figure(figsize=(10, 8))
+        plt.imshow(chm.T, cmap='viridis', origin='lower', extent=[y_min, y_max, x_min, x_max])
+
+        x_coords = x_min + local_max[:, 1] * res
+        y_coords = y_min + local_max[:, 0] * res
+        max_labels = labels_ws[local_max[:, 0], local_max[:, 1]]
+
+        diameters = []
+        for lbl in max_labels:
+            entry = df[df["Tree_ID"] == lbl]
+            if not entry.empty:
+                diameters.append(entry["Crown_Diameter_m"].values[0])
+            else:
+                diameters.append(np.nan)
+
+        diameters = np.array(diameters)
+        sc = plt.scatter(y_coords, x_coords, c=diameters, cmap='Greens', s=20, edgecolor='k', label="Baumgipfel")
+        plt.colorbar(sc, label='Durchmesser Baumkrone [m]')
+        plt.title("CHM mit Baumgipfeln (farbcodiert nach Kronendurchmesser)")
+        plt.legend()
+        fig7_path = os.path.join(output_dir, f"chm_baumgipfel_colordiameter_RunID_{RunID}.png")
+        plt.savefig(fig7_path, dpi=300)
+        plt.close()
+        print(f"CHM gespeichert: {fig7_path}")
+
+    print("Alle Visualisierungen erfolgreich gespeichert.")

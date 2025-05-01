@@ -1,0 +1,13 @@
+3 Klassen
+HSV + Zdir 
+3 Klassen
+RGB + Zdir
+
+
+KOO Z, RGB, HSV, XYZ dir
+2 Klassen
+KMeans2 "Z coordinate", "Red color (0-1)", "Green color (0-1)", "Blue color (0-1)", "Hue (°)", "Saturation (%)", "Value (%)", "X scan dir", "Y scan dir", "Z scan dir"
+KMeans22 "Red color (0-1)", "Green color (0-1)", "Blue color (0-1)", "Hue (°)", "Saturation (%)", "Value (%)", "X scan dir", "Y scan dir", "Z scan dir"
+KMeans222"Hue (°)", "Saturation (%)", "Z scan dir"
+"GBZdir"
+"GB"
