@@ -34,10 +34,10 @@ with tqdm(total=100, desc="Clustering") as pbar:
 
 
 # Neue Datei speichern (mit Farbklassen, ohne Header)
-output_folder = f"KMeans_Clustered_Files_{num_clusters}_fit_{fit}"
+output_folder = f"arbeitspakete\01_klassifizierung\05_KMeans\output\KMeans_Clustered_Files_{num_clusters}_fit_{fit}"
 os.makedirs(output_folder, exist_ok=True)
-# output_path = os.path.join(output_folder, f"kmeans_clustered_{fit}_punktwolke.txt")
-# df.to_csv(output_path, sep=";", index=False, decimal=".", header=False)
+output_path = os.path.join(output_folder, f"kmeans_clustered_{fit}_punktwolke.txt")
+df.to_csv(output_path, sep=";", index=False, decimal=".", header=False)
 
 # print(f"Datei mit KMeans-Farbklassen gespeichert als: {output_path}")
 
