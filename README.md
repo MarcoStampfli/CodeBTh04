@@ -4,11 +4,11 @@
 
 Dieses Repository dokumentiert die Entwicklung eines Stadtmodells, mit Fokus auf die Automatisierung der einzelnen Prozessschritte mit Python.
 
-Aufgrund der Datenmengen müssen die **Punktewolken** jeweils beim Benutzer **lokal** liegen. Dafür sind die Ordner input und output, jeweils pro Arbeitsschritt vorgesehen. Diese sind im .gitignor auskommentiert und werden auf Github nicht synchornisiert. Entsprechende Resultate sind zeitnah auf dem Server abzulegen.
+Aufgrund der Datenmengen müssen die **Punktwolken** jeweils beim Benutzer **lokal** liegen. Dafür sind die Ordner input und output, jeweils pro Arbeitsschritt vorgesehen. Diese sind im .gitignor auskommentiert und werden auf Github nicht synchornisiert. Entsprechende Resultate sind zeitnah auf dem Server abzulegen.
 
 Die Gliederung des Repo's soll wie folgt nach Hierachie erfolgen:
 
-1. Arbeitspaket: Klassifizierung, Segmentierung, Abstrahierung, Rekonstruktion, Gis Integration
+1. Arbeitspaket: Klassifizierung, Segmentierung, Abstrahierung, Rekonstruktion, GIS-Integration
 2. Arbeitsschritt: # logische/nachvollziehbare Gliederung und Namen im Arbeitspaket
 3. Arbeitsgrundlage: # klare Struktur mit Input/Output, ev Markdown mit Erläuterungen, .py oder .ipynb-Dateien
 
