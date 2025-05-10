@@ -18,11 +18,11 @@ Code wurde mit Hilfe von ChatGpt erstellt.
 
 
 # Label für Ausgabe
-RunId = 1
+RunId = 250510_2
 # -------------------------------------------
 # Parameterdefinition (Tuningmöglichkeiten)
 # -------------------------------------------
-eps = 3             # DBSCAN: Radius
+eps = 2             # DBSCAN: Radius
 min_samples = 300      # DBSCAN: Mindestpunkte pro Cluster
 radius = 3             # Sphärengrössen der Visualisierung
 
@@ -123,6 +123,43 @@ for _, row in tqdm(df.iterrows(), total=len(df), desc="Sphären erzeugen"):
     sphere.paint_uniform_color([1.0, 0.4, 0.0])  # orange
     sphere_list.append(sphere)
 
+# ----------------------
+# NEUE Visualisierung: Grün + Grau + Kugeln
+# ----------------------
+print("📗 Erzeuge alternative Visualisierung mit einheitlichem Grün/Grau ...")
+
+# Punktwolke aufteilen
+noise_points = vegetation[labels == -1]
+tree_points = vegetation[labels != -1]
+
+# Punktwolke: Noise = grau
+pcd_noise = o3d.geometry.PointCloud()
+pcd_noise.points = o3d.utility.Vector3dVector(noise_points)
+pcd_noise.paint_uniform_color([0.5, 0.5, 0.5])  # grau
+
+# Punktwolke: restliche Vegetation = grün
+pcd_green = o3d.geometry.PointCloud()
+pcd_green.points = o3d.utility.Vector3dVector(tree_points)
+pcd_green.paint_uniform_color([0.6, 1.0, 0.6])  # hellgrün
+
+# Visualisierung
+vis2 = o3d.visualization.Visualizer()
+vis2.create_window(visible=True)
+vis2.add_geometry(pcd_noise)
+vis2.add_geometry(pcd_green)
+for s in sphere_list:
+    vis2.add_geometry(s)
+
+vis2.poll_events()
+vis2.update_renderer()
+
+# Screenshot speichern
+screenshot_path_2 = os.path.join(output_dir, f"baumcluster_GRUENGRAU_ID_{RunId}.png")
+vis2.capture_screen_image(screenshot_path_2)
+print(f" ✅ Screenshot (grün/grau) gespeichert: {screenshot_path_2}")
+
+vis2.run()
+vis2.destroy_window()
 # ----------------------
 # 5. Screenshot speichern
 # ----------------------
