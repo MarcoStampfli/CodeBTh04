@@ -14,12 +14,12 @@ import networkx as nx
 from shapely.geometry import Polygon
 
 # === Parameter ===
-# input_path = r"arbeitspakete\02_segmentierung\02_Segm_Gebäude\input\P3A1_Gebaeude.txt"
-# num_kmeans_clusters = 150 # falls Gebàude noch zusammen, dann héher gehen
-input_path = r"arbeitspakete\02_segmentierung\02_Segm_Gebäude\input\Input__PW_Klasse_13_kmeans_normalisiert.txt"
-num_kmeans_clusters = 5000 # falls Gebàude noch zusammen, dann héher gehen
+input_path = r"arbeitspakete\02_segmentierung\02_Segm_Gebäude\input\P3A1_Gebaeude_normalisiert.txt"
+num_kmeans_clusters = 200 # falls Gebàude noch zusammen, dann héher gehen
+# input_path = r"arbeitspakete\02_segmentierung\02_Segm_Gebäude\input\Input__PW_Klasse_13_kmeans_normalisiert.txt"
+# num_kmeans_clusters = 5000 # falls Gebàude noch zusammen, dann héher gehen
 #num_reclump_clusters = 15
-code = f"Seg_P3K13_KMeans_{num_kmeans_clusters}_OBB_ReClump_"
+code = f"Seg_P3A1_Geb_KMeans_{num_kmeans_clusters}_OBB_ReClump_"
 
 # === Hilfsfunktion: PCA-ausgerichtete OBB ===
 def get_pca_aligned_obb(points_np):
@@ -130,7 +130,7 @@ def show_obb_boxes_colored(df, cluster_obb, reclump_labels):
     o3d.visualization.draw_geometries(geometries, window_name="PCA-OBB Cluster")
 
 # === Visualisierung speichern ===
-output_dir = r"arbeitspakete\02_segmentierung\02_Segm_Gebäude\output"
+output_dir = r"arbeitspakete\02_segmentierung\02_Segm_Gebäude\output2"
 os.makedirs(output_dir, exist_ok=True)
 
 # 1. Vor Clustering: Punktwolke grau
@@ -143,6 +143,11 @@ pcd_raw.paint_uniform_color([0.5, 0.5, 0.5])
 geometries = []
 cmap = plt.get_cmap("tab20")
 max_label = max(reclump_labels_graph.values()) if reclump_labels_graph else 1
+if max_label == 0:
+    max_label = 1  # Schutz vor Division durch 0
+if len(set(reclump_labels_graph.values())) <= 1:
+    print("⚠️ Warnung: Nur eine oder keine Clustergruppe erkannt. Farben ggf. ungenau.")
+
 for cid, obb in cluster_obb.items():
     label = reclump_labels_graph.get(cid, -1)
     color = cmap(label / max_label)[:3] if label >= 0 else (0.5, 0.5, 0.5)
@@ -193,7 +198,7 @@ pcd_kmeans.points = o3d.utility.Vector3dVector(df[["X coordinate", "Y coordinate
 pcd_kmeans.colors = o3d.utility.Vector3dVector(colors_kmeans)
 take_screenshot([pcd_kmeans], f"{code}screenshot_00_kmeans_clustering.png")
 # Screenshot 1: raw point cloud
-take_screenshot([pcd_raw], f"{code}screenshot_01_raw.png")
+# take_screenshot([pcd_raw], f"{code}screenshot_01_raw.png")
 
 # Screenshot 2: clustered colored boxes + points
 geometries = []
@@ -216,8 +221,18 @@ print("3. Eingefärbte Punkte (Reclump)")
 geometries_raw_plus_obb = [pcd_raw] + [obb_to_lineset(obb, color=cmap(reclump_labels_graph.get(cid, -1) / max_label)[:3]) for cid, obb in cluster_obb.items()]
 o3d.visualization.draw_geometries(geometries_raw_plus_obb, window_name="01 Rohpunktwolke + OBBs")
 
+# Screenshot 1b: Rohpunktwolke mit OBBs
+geometries_raw_plus_obb = [pcd_raw] + [obb_to_lineset(obb, color=cmap(reclump_labels_graph.get(cid, -1) / max_label)[:3]) for cid, obb in cluster_obb.items()]
+take_screenshot(geometries_raw_plus_obb, f"{code}screenshot_01b_raw_plus_OBBs.png")
+
+# Screenshot 2b: KMeans-Clustering eingefärbt
+take_screenshot([pcd_kmeans], f"{code}screenshot_02b_kmeans_cluster_points.png")
+
 # 2. KMeans Clustering Ergebnis (eingefärbte Punkte)
 o3d.visualization.draw_geometries([pcd_kmeans], window_name="02 KMeans Cluster")
+
+# Screenshot 3: Eingefärbte Punkte nach Reclump
+take_screenshot([pcd_clustered], f"{code}screenshot_03b_reclumped_points.png")
 
 # 3. Eingefärbte Punkte nach Reclump
 o3d.visualization.draw_geometries([pcd_clustered], window_name="03 Reclumped Points")
