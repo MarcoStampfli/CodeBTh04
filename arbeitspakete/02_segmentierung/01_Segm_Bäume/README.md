@@ -21,6 +21,10 @@ Code ist effizent und ist in rund 10 min durch (PW_Baeume_o_Boden.las,)
 
 `min_samples` = mindest Anzahl Punkte pro Cluster (Baum)
 
+**Schema Ansatz 1**
+
+![Ansatz 1 Bild](../../../docs\img\Segm\Ansatz1_Einzelbaum_Algo.png)
+
 
 ## CODE 2:  Segmentieren von Bäumen (dichter Wald)
 Datei: `Code_Wald.py`
@@ -28,6 +32,9 @@ Datei: `Code_Wald.py`
 Code 2 kombiniert rasterbasierte Analyse mit Methoden der Bildverarbeitung, um aus Höheninformationen ein Canopy Height Model (CHM) zu generieren, Baumgipfel zu lokalisieren und Baumkronen mittels Watershed-Segmentierung zu trennen. Dies ist vorallem da hilfreich wo sich Baumkronen überlappen oder nahe beieinander stehen, das heisst in dichten Waldgebieten.
 
 8-tung: Code ist rechenintensiv und dauert... bei zu kleiner Rasterwahl (0.5= 7min/0.25=2h!)
+
+![Ansatz 2 Bild](../../../docs\img\Segm\Workflow_Watershed.png)
+
 
 **Die Parameter:**
 ````Python
@@ -47,6 +54,10 @@ diameter_max = 10.0    # [m] maximaler Kronendurchmesser
 |---------|-------------|--------------|----------|------------------|
 | 1       | 2613263.90  | 1266088.97   | 290.66   | 2.65             |
 | 2       | 2612151.84  | 1266080.35   | 289.57   | 7.65             |
+
+**Schema Ansatz 2**
+
+![Ansatz 2 Bild](../../../docs\img\Segm\Ansatz2_Watershed_Algo.png)
 
 
 
