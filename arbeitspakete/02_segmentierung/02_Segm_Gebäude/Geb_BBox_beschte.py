@@ -15,7 +15,7 @@ from shapely.geometry import Polygon
 
 # === Parameter ===
 input_path = r"arbeitspakete\02_segmentierung\02_Segm_Gebäude\input\P3A1_Gebaeude.txt"
-num_kmeans_clusters = 150 # Anz Clusters fèr BBox
+num_kmeans_clusters = 200 # Anz Clusters fèr BBox
 num_reclump_clusters = 30
 code = "XY"
 
