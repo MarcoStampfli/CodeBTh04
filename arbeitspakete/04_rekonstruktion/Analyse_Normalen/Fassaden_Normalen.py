@@ -17,6 +17,7 @@ def load_angles(filename):
 
 
 # Dateien einlesen
+angles0 = load_angles(f'{input_path}/Cloud_0.txt')
 angles1 = load_angles(f'{input_path}/Cloud_1.txt')
 angles2 = load_angles(f'{input_path}/Cloud_2.txt')
 angles3 = load_angles(f'{input_path}/Cloud_3.txt')
@@ -25,6 +26,7 @@ angles3 = load_angles(f'{input_path}/Cloud_3.txt')
 def describe(data):
     return np.mean(data), np.std(data)
 
+mean0, std0 = describe(angles0)
 mean1, std1 = describe(angles1)
 mean2, std2 = describe(angles2)
 mean3, std3 = describe(angles3)
@@ -32,9 +34,10 @@ mean3, std3 = describe(angles3)
 # KDE-Plot
 plt.figure(figsize=(10, 6))
 
-sns.kdeplot(angles1, fill=True, color='red', label=f'Cloud 1 (μ={mean1:.2f}, σ={std1:.2f})', linewidth=1.5)
-sns.kdeplot(angles2, fill=True, color='green', label=f'Cloud 2 (μ={mean2:.2f}, σ={std2:.2f})', linewidth=1.5)
-sns.kdeplot(angles3, fill=True, color='blue', label=f'Cloud 3 (μ={mean3:.2f}, σ={std3:.2f})', linewidth=1.5)
+sns.kdeplot(angles0, fill=False, color='orange', label=f'Cloud 0 (μ={mean1:.2f}, σ={std1:.2f})', linewidth=1.5)
+sns.kdeplot(angles1, fill=False, color='red', label=f'Cloud 1 (μ={mean1:.2f}, σ={std1:.2f})', linewidth=1.5)
+sns.kdeplot(angles2, fill=False, color='green', label=f'Cloud 2 (μ={mean2:.2f}, σ={std2:.2f})', linewidth=1.5)
+sns.kdeplot(angles3, fill=False, color='blue', label=f'Cloud 3 (μ={mean3:.2f}, σ={std3:.2f})', linewidth=1.5)
 
 plt.title('Dichteverteilung der Normalenwinkel')
 plt.xlabel('Winkel (Grad)')
