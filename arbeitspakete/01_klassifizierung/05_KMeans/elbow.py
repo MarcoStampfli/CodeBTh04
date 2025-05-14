@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 from sklearn.cluster import KMeans
 
 # Pfad zur normalisierten Punktwolke (HSV-Daten)
-file_path = r"250327_Normalisieren\output\PW_P3_normalisiert.txt"
+file_path = r"C:\Users\st1174360\Documents\BTh_04\250327_Normalisieren\output\PW_P3A1_normalisiert.txt"
 # 1. Daten einlesen
 df = pd.read_csv(file_path, delimiter=";", decimal=".", header=None)
 df.columns = [
@@ -14,7 +14,7 @@ df.columns = [
     "X scan dir", "Y scan dir", "Z scan dir"
 ]
 
-# 2. WCSS für k = 1 bis 12 berechnen
+# 2. WCSS für k = 1 bis 8 berechnen
 wcss = []
 k_values = np.arange(1, 9)
 for k in k_values:
@@ -41,28 +41,28 @@ elbow_idx = distances.argmax()
 elbow_k = k_values[elbow_idx]
 elbow_wcss = wcss[elbow_idx]
 
-# 5. Plot erstellen
-plt.figure(figsize=(8, 5))
-plt.plot(k_values, wcss, 'o-', label="WCSS (Elbow-Methode)", linewidth=2)
-plt.plot(k_values, hyperbola, 's--', label="Referenz: Hyperbel (1/x Skala)", linewidth=2)
+# Plot erstellen
+fig, ax = plt.subplots(figsize=(8, 5))
 
-# Knick als roter Punkt markieren
-plt.scatter(elbow_k, elbow_wcss, color='red', s=100, label=f'Elbow @ k={elbow_k}')
-
-# Beschriftung des Punkts
-plt.annotate(
+ax.plot(k_values, wcss, 'o-', label="WCSS (Elbow-Methode)", linewidth=2)
+ax.plot(k_values, hyperbola, 's--', label="Referenz: Hyperbel (1/x Skala)", linewidth=2)
+ax.scatter(elbow_k, elbow_wcss, color='red', s=100, label=f'Elbow @ k={elbow_k}')
+ax.annotate(
     f'Elbow: k={elbow_k}',
     xy=(elbow_k, elbow_wcss),
     xytext=(elbow_k + 0.5, elbow_wcss + (max(wcss) * 0.05)),
     arrowprops=dict(arrowstyle='->', color='red')
 )
 
-# Achsen & Titel
-plt.xticks(k_values)
-plt.xlabel("Anzahl der Cluster k")
-plt.ylabel("Within-Cluster Sum of Squares (WCSS)")
-plt.title("Elbow-Methode: WCSS vs. Clusteranzahl")
-plt.grid(True)
-plt.legend()
-plt.tight_layout()
+ax.set_xticks(k_values)
+ax.set_xlabel("Anzahl der Cluster k")
+ax.set_ylabel("Within-Cluster Sum of Squares (WCSS)")
+
+# Haupttitel und Untertitel
+fig.suptitle("Elbow-Methode: WCSS vs. Clusteranzahl", fontsize=16)
+ax.set_title("Punktwolke P3A1, mit Feature H (Farbton)", fontsize=12, pad=10)
+
+ax.grid(True)
+ax.legend()
+plt.tight_layout(rect=[0, 0, 1, 0.92])  # Platz für suptitle schaffen
 plt.show()
