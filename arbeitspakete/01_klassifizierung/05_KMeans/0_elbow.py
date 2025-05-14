@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 from sklearn.cluster import KMeans
 
 # Pfad zur normalisierten Punktwolke (HSV-Daten)
-file_path = r"250327_Normalisieren\output\PW_P3_normalisiert.txt"  # ggf. anpassen
+file_path = r"C:\Users\st1174360\Documents\BTh_04\250327_Normalisieren\output\PW_P3A1_normalisiert.txt"  # ggf. anpassen
 
 # 1. Daten einlesen
 df = pd.read_csv(file_path, delimiter=";", decimal=".", header=None)
