@@ -19,7 +19,7 @@ wcss = []
 k_values = np.arange(1, 9)
 for k in k_values:
     kmeans = KMeans(n_clusters=k, random_state=42, n_init=10)
-    kmeans.fit(df[["Hue (0-1)"]])
+    kmeans.fit(df[["Hue (0-1)","Z scan dir"]])
     wcss.append(kmeans.inertia_)
 
 # 3. Hyperbel-Referenz (Startwert WCSS_1 geteilt durch k)
@@ -59,10 +59,10 @@ ax.set_xlabel("Anzahl der Cluster k")
 ax.set_ylabel("Within-Cluster Sum of Squares (WCSS)")
 
 # Haupttitel und Untertitel
-fig.suptitle("Elbow-Methode: WCSS vs. Clusteranzahl", fontsize=16)
-ax.set_title("Punktwolke P3A1, mit Feature H (Farbton)", fontsize=12, pad=10)
+fig.suptitle("Elbow-Methode: WCSS vs. Clusteranzahl", fontsize=16, y=0.95)
+ax.set_title("Punktwolke P3A1, mit Feature H (Farbton) und Z-Normale", fontsize=12, pad=20)
 
 ax.grid(True)
 ax.legend()
-plt.tight_layout(rect=[0, 0, 1, 0.92])  # Platz für suptitle schaffen
+plt.tight_layout(rect=[0, 0, 1, 0.98])  # Platz für suptitle schaffen
 plt.show()
