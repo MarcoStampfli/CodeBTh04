@@ -24,20 +24,20 @@ start = time.time()
 # Parameterdefinition (Tuningmöglichkeiten)
 # -------------------------------------------
 res = 0.5            # [m] CHM Rasterauflösung
-min_distance = 6    # [Pixel] Abstand lokaler Maxima (Zusammenfassen der Maximas auf einem Baum)
+min_distance = 4    # [Pixel] Abstand lokaler Maxima (Zusammenfassen der Maximas auf einem Baum)
 sigma = 0            # Glättung (Gauss-Filter)
-min_height = 1.5      # Mindesthöhe für Punkte
-eps = 0.8              # DBSCAN: Radius
-min_samples = 150   # DBSCAN: Mindestpunkte pro Cluster
+min_height = 0.3      # Mindesthöhe für Punkte
+eps = 0.9              # DBSCAN: Radius
+min_samples = 100   # DBSCAN: Mindestpunkte pro Cluster
 diameter_min = 2.5    # [m] minimaler Kronendurchmesser
 diameter_max = 11   # [m] maximaler Kronendurchmesser
 # -------------------------------------------
-datum = "20250428F2"
+datum = "20250517_final3"
 RunID = f"Parameter_res{res}_minPix{min_distance}_sig{sigma}_minH{min_height}_eps{eps}_minSam{min_samples}_DM{diameter_min}bis{diameter_max}"
 # ----------------------
 # 0. Output-Ordner
 # ----------------------
-output_dir = fr"arbeitspakete\02_segmentierung\01_Segm_Bäume\output\{datum}"
+output_dir = fr"arbeitspakete\02_segmentierung\01_Segm_Baeume\output\{datum}"
 os.makedirs(output_dir, exist_ok=True)
 print(f"Output-Ordner: {output_dir}")
 
@@ -45,7 +45,7 @@ print(f"Output-Ordner: {output_dir}")
 # 1. Punktwolke laden (TXT)
 # ----------------------
 print("Lade Punktwolke ...")
-txt_path = r"arbeitspakete\02_segmentierung\01_Segm_Bäume\input\PW_Baeume_o_Boden_o_Rauschen.txt"
+txt_path = r"arbeitspakete\02_segmentierung\01_Segm_Baeume\input\PW_Baeume_o_Boden_o_Rauschen.txt"
 df_txt = pd.read_csv(txt_path, delimiter= ";", decimal= ".", header=None)
 df_txt.columns = ['X', 'Y', 'Z']
 points = df_txt[['X', 'Y', 'Z']].values
@@ -167,7 +167,7 @@ df = pd.DataFrame(tree_data)
 # df = df.rename(columns={"X": "E", "Y": "N"})
 # df = df[["Tree_ID", "E", "N", "Height_m", "Crown_Diameter_m"]]
 # Speichern
-csv_path = os.path.join(output_dir, f"baumdaten_watershed_RunID_{RunID}.csv")
+csv_path = os.path.join(output_dir, f"baumdaten_watershed_RunID_{datum}.csv")
 df.to_csv(csv_path, decimal=".", columns=["Tree_ID", "E", "N", "Height_m", "Crown_Diameter_m"], index=False)
 print(f"CSV gespeichert: {csv_path}")
 start_time = zeit(start_time, msg="6. Baumdaten extrahieren und speichern – ")

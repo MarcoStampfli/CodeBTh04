@@ -11,7 +11,7 @@ import matplotlib.pyplot as plt
 start_time = time.time()
 
 # Datei mit bereits berechneten HSV-Werten laden
-file_path = "250327_Normalisieren\output\PW_P3_normalisiert.txt"  # Falls der Name anders ist, bitte anpassen
+file_path = r"C:\Users\st1174360\Documents\BTh_04\250327_Normalisieren\output\PW_P3_normalisiert.txt"  
 df = pd.read_csv(file_path, delimiter=";", decimal=".", header=None)
 
 # Spaltennamen basierend auf der erweiterten Datei setzen
@@ -21,22 +21,22 @@ df.columns = ["X coordinate", "Y coordinate", "Z coordinate",
             "X scan dir", "Y scan dir", "Z scan dir"]
 
 # Anzahl der Cluster definieren
-num_clusters = 3  # Kann auf 6-10 angepasst werden
-fit = "H" # Fit Variablen
-
+num_clusters = 2  # Kann auf 6-10 angepasst werden
+fit = df[["Hue (0-1)"]] # Fit Variablen
+fitcode = "H"
 
 # Progressbar für K-Means
 print("Starte K-Means Clustering...")
 with tqdm(total=100, desc="Clustering") as pbar:
     kmeans = KMeans(n_clusters=num_clusters, random_state=42, n_init=10)
-    df["Color Cluster"] = kmeans.fit_predict(df[["Hue (0-1)"]])
+    df["Color Cluster"] = kmeans.fit_predict(fit)
     pbar.update(100)
 
 
 # Neue Datei speichern (mit Farbklassen, ohne Header)
-output_folder = f"arbeitspakete\01_klassifizierung\05_KMeans\output\KMeans_Clustered_Files_{num_clusters}_fit_{fit}"
+output_folder = r"arbeitspakete\01_klassifizierung\05_KMeans\output\KMeans_Clustered_Files"+f"_{num_clusters}_fit_{fitcode}"
 os.makedirs(output_folder, exist_ok=True)
-output_path = os.path.join(output_folder, f"kmeans_clustered_{fit}_punktwolke.txt")
+output_path = os.path.join(output_folder, f"kmeans_clustered_{fitcode}_punktwolke.txt")
 df.to_csv(output_path, sep=";", index=False, decimal=".", header=False)
 
 # print(f"Datei mit KMeans-Farbklassen gespeichert als: {output_path}")
@@ -45,7 +45,7 @@ df.to_csv(output_path, sep=";", index=False, decimal=".", header=False)
 print("Speichere Cluster-Dateien...")
 for cluster_id in tqdm(df["Color Cluster"].unique(), desc="Speichern der Cluster"):
     cluster_df = df[df["Color Cluster"] == cluster_id]
-    output_file = os.path.join(output_folder, f"PW_Klasse_{int(cluster_id)}_kmeans_fit_{fit}.txt")
+    output_file = os.path.join(output_folder, f"PW_Klasse_{int(cluster_id)}_kmeans_fit_{fitcode}.txt")
     cluster_df.to_csv(output_file, sep=";", index=False, decimal=".", header=False)
 
 print("Alle KMeans-Cluster-Dateien wurden erfolgreich erstellt!")

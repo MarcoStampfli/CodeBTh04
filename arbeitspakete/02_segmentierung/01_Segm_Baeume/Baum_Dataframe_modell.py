@@ -42,11 +42,12 @@ for _, row in df.iterrows():
 # --- Export als OBJ ---
 # o3d.io.write_triangle_mesh("baum_modelle_alle.obj", all_baeume)
 # print("Exportiert als baum_modelle.obj")
+
 # --- Export als PLY ---
 o3d.io.write_triangle_mesh("baum_modelle_alle.ply", all_baeume)
 print("Exportiert als baum_modelle.ply")
 
-# --- Export als STL --- ohne Farben!!!
+# --- Export als STL --- ohne Farben!!! gut für 3D-Druck
 # o3d.io.write_triangle_mesh("baum_modelle.stl", all_baeume)
 # print("Exportiert als baum_modelle.stl")
 
