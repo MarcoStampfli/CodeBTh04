@@ -7,12 +7,12 @@ INPUT: Roh CSV-Datei Bäume, Mesh
 OUTPUT: CSV mit Baumparameter für Modellierung
 '''
 # Parameter
-input_path = r"arbeitspakete\02_segmentierung\01_Segm_Baeume\output\Baumdaten\01_v2_baumdaten_watershed_merged.csv"
+input_path = r"arbeitspakete\02_segmentierung\01_Segm_Baeume\output\Baumdaten\01_v3_baumdaten_watershed_merged.csv"
 # -----
 output_dir = r"arbeitspakete\02_segmentierung\01_Segm_Baeume\output\Baumdaten"
 os.makedirs(output_dir, exist_ok=True)
 # -----
-file_name_output = "02_v2_baumdaten_Platte3_3631.csv"
+file_name_output = "02_v3_baumdaten_Platte3_5309.csv"
 
 # --- 1. CSV mit den Baum-Koordinaten laden ---
 df = pd.read_csv(input_path, delimiter=",", decimal=".")

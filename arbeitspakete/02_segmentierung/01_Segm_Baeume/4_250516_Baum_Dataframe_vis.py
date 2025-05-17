@@ -8,7 +8,8 @@ mesh_legacy = o3d.io.read_triangle_mesh(mesh_path)
 mesh_legacy.paint_uniform_color([0.8, 0.8, 0.8])  # Hellgrau
 
 # --- Daten laden ---
-input_csv = r"arbeitspakete\02_segmentierung\01_Segm_Baeume\output\baumdaten_Platte3.csv"
+input_csv = r"arbeitspakete\02_segmentierung\01_Segm_Baeume\output\Baumdaten\baumdaten_Platte3_4244.csv"
+# input_csv = r"arbeitspakete\02_segmentierung\01_Segm_Baeume\output\Baumdaten\02_v2_baumdaten_Platte3_3631.csv"
 df = pd.read_csv(input_csv)
 
 scene = [mesh_legacy]  # Start mit Mesh

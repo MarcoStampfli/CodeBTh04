@@ -5,11 +5,12 @@ import os
 
 # --- Daten laden ---
 # input_path = r"arbeitspakete\02_segmentierung\01_Segm_Baeume\output\Baumdaten\02_baumdaten_Platte3_4244.csv"
-input_path = r"arbeitspakete\02_segmentierung\01_Segm_Baeume\output\Baumdaten\02_v2_baumdaten_Platte3_3631.csv"
+# input_path = r"arbeitspakete\02_segmentierung\01_Segm_Baeume\output\Baumdaten\02_v2_baumdaten_Platte3_3631.csv"
+input_path = r"arbeitspakete\02_segmentierung\01_Segm_Baeume\output\Baumdaten\02_v3_baumdaten_Platte3_5309.csv"
 # input_path = r"arbeitspakete\02_segmentierung\01_Segm_Baeume\output\baumdaten_Platte3.csv"
 df = pd.read_csv(input_path) 
 
-file_name = "03_v2_baummodel_Platte3_3621"
+file_name = "03_v3_baummodel_Platte3_5309"
 output_dir = r"arbeitspakete\02_segmentierung\01_Segm_Baeume\output\Baumdaten"
 os.makedirs(output_dir, exist_ok=True)
 output_path = os.path.join(output_dir, file_name)
