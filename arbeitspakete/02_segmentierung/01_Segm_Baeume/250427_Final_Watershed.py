@@ -23,16 +23,16 @@ start = time.time()
 # -------------------------------------------
 # Parameterdefinition (Tuningmöglichkeiten)
 # -------------------------------------------
-res = 0.5            # [m] CHM Rasterauflösung
-min_distance = 4    # [Pixel] Abstand lokaler Maxima (Zusammenfassen der Maximas auf einem Baum)
+res = 1           # [m] CHM Rasterauflösung
+min_distance = 2    # [Pixel] Abstand lokaler Maxima (Zusammenfassen der Maximas auf einem Baum)
 sigma = 0            # Glättung (Gauss-Filter)
-min_height = 0.3      # Mindesthöhe für Punkte
-eps = 0.9              # DBSCAN: Radius
-min_samples = 100   # DBSCAN: Mindestpunkte pro Cluster
+min_height = 1      # Mindesthöhe für Punkte
+eps = 0.8              # DBSCAN: Radius
+min_samples = 130   # DBSCAN: Mindestpunkte pro Cluster
 diameter_min = 2.5    # [m] minimaler Kronendurchmesser
 diameter_max = 11   # [m] maximaler Kronendurchmesser
 # -------------------------------------------
-datum = "20250517_final3"
+datum = "20250517_final4"
 RunID = f"Parameter_res{res}_minPix{min_distance}_sig{sigma}_minH{min_height}_eps{eps}_minSam{min_samples}_DM{diameter_min}bis{diameter_max}"
 # ----------------------
 # 0. Output-Ordner
