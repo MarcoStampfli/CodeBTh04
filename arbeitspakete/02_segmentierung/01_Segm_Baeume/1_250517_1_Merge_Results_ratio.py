@@ -1,3 +1,11 @@
+"""
+Abstract:
+Dieses Skript führt mehrere Einzelbaumlisten aus unterschiedlichen Segmentierungsläufen zusammen und bereinigt die resultierende Gesamtliste um räumliche Duplikate. 
+Für jeden Baum werden die Koordinaten und Kronendurchmesser berücksichtigt. Mit Hilfe eines dynamisch aktualisierten KDTree und einem Überlappungsfaktor wird geprüft, 
+ob ein neu hinzukommender Baum bereits durch einen bestehenden Eintrag ausreichend abgedeckt ist. Nur eindeutig identifizierte Bäume werden übernommen. Das bereinigte, 
+zusammengeführte Ergebnis wird als CSV-Datei gespeichert und dient als Grundlage für weitere Analysen oder Modellierungsprozesse.
+"""
+
 import pandas as pd
 import numpy as np
 from scipy.spatial import cKDTree

@@ -1,3 +1,12 @@
+"""
+Abstract:
+Dieses Skript vereinigt mehrere Listen einzelner Baumdetektionen aus verschiedenen Segmentierungsläufen zu einer bereinigten Gesamtliste. 
+Die Einzeldateien werden geladen, zusammengeführt und mit Hilfe eines räumlichen Abstandsfilters (KDTree) von Duplikaten bereinigt. 
+Für jeden Baum werden Koordinaten und Kronendurchmesser berücksichtigt, so dass nahe beieinanderliegende Detektionen als Duplikate erkannt und entfernt werden. 
+Nach dem Merge wird ausgegeben, wie viele Bäume aus jeder Ursprungsdatei im Endergebnis enthalten sind und welcher Anteil dies jeweils ausmacht. 
+Das Skript eignet sich zur konsolidierten Auswertung und Dokumentation von Einzelbaumsegmentierungen bei verschiedenen Parameterläufen oder Datenquellen.
+"""
+
 import pandas as pd
 import numpy as np
 from scipy.spatial import cKDTree

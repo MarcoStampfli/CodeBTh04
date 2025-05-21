@@ -1,11 +1,18 @@
-import open3d as o3d
-import numpy as np
-import pandas as pd
-import os
 '''
 INPUT: Roh CSV-Datei Bäume, Mesh
 OUTPUT: CSV mit Baumparameter für Modellierung
 '''
+'''
+Das Skript berechnet für jede Baumposition aus einer CSV-Datei auf Basis eines Gelände-Meshs die Baumhöhe (Abstand Baumspitze zum Gelände)
+und leitet daraus alle Parameter ab, die für eine 3D-Modellierung der Bäume (z. B. für Visualisierung oder Simulation) benötigt werden. 
+Die Resultate werden in eine neue CSV geschrieben.
+'''
+
+import open3d as o3d
+import numpy as np
+import pandas as pd
+import os
+
 # Parameter
 input_path = r"arbeitspakete\02_segmentierung\01_Segm_Baeume\output\Baumdaten\01_v3_baumdaten_watershed_merged.csv"
 # -----
@@ -68,6 +75,7 @@ df[["Trunk_R","Trunk_G","Trunk_B"]] = pd.DataFrame(df["Trunk_RGB"].tolist(), ind
 df.drop(columns=["Trunk_RGB"], inplace=True)
 
 # --- Spalten in die gewünschte Reihenfolge bringen
+# Baumparameter
 df = df[[
     "Tree_ID",
     "X",

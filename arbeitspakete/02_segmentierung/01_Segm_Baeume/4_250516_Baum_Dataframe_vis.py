@@ -1,3 +1,13 @@
+"""
+Abstract:
+Dieses Skript visualisiert eine 3D-Szene bestehend aus einem Gelände-Mesh und modellierten Einzelbäumen. 
+Das Terrain wird aus einer OBJ-Datei geladen und einheitlich eingefärbt. Die Baumdaten 
+(Position, Stamm- und Kronenparameter, Farben) werden aus einer CSV-Tabelle gelesen. 
+Für jeden Baum werden Stamm und Krone als parametrische 3D-Geometrien (Zylinder und skaliertes Ellipsoid) 
+im Raum positioniert und farblich codiert. Die komplette Szene kann anschließend interaktiv mit Open3D betrachtet werden. 
+Das Skript dient der anschaulichen Qualitätskontrolle und Präsentation von Ergebnissen aus der automatisierten Baumdetektion und -modellierung.
+"""
+
 import open3d as o3d
 import numpy as np
 import pandas as pd

@@ -1,7 +1,18 @@
+"""
+Abstract:
+Dieses Skript generiert automatisiert einen HTML-Report aus einer hierarchisch aufgebauten Ergebnisstruktur von Segmentierungsläufen. 
+Für jeden Auswertungsordner werden relevante Parameter direkt aus den Dateinamen extrahiert, die Anzahl der detektierten Bäume aus 
+zugehörigen CSV-Dateien bestimmt und die wichtigsten Ergebnisbilder (z. B. Segmentierungs- und Qualitätskontrollplots) übersichtlich 
+und nebeneinander angezeigt. Die Auswertung erfolgt dabei dynamisch und ist unabhängig von der Anzahl oder Benennung der Ordner. 
+Das Resultat ist ein übersichtlicher, browserbasierter Gesamtbericht, der sich besonders zur schnellen visuellen und tabellarischen 
+Bewertung sowie zum Vergleich unterschiedlicher Parameterläufe eignet.
+"""
+
 import os
 import re
 import pandas as pd
 from pathlib import Path
+
 
 def parse_filename(filename):
     pattern = (r"Parameter_res(?P<res>[0-9.]+)_minPix(?P<min_distance>[0-9]+)_sig(?P<sigma>[0-9.]+)"

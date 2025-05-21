@@ -1,3 +1,13 @@
+'''
+Im vorliegenden Workflow wird ein vollständig automatisierter Ansatz zur Detektion und Segmentierung einzelner Baumkronen aus 3D-Punktwolken vorgestellt. 
+Nach einer Vorfilterung der Punktwolke werden Vegetationspunkte mittels DBSCAN-Clustering zu potenziellen Einzelbäumen gruppiert und hinsichtlich 
+ihrer Durchmesser gefiltert. Aus den gefilterten Punkten wird ein Canopy Height Model (CHM) erzeugt, auf dem mit Hilfe von Glättung und 
+lokaler Maxima die Baumgipfel als Ausgangspunkte für eine anschließende Watershed-Segmentierung identifiziert werden. 
+Aus den resultierenden Segmenten werden für jede Baumkrone relevante Parameter wie Position, Höhe und Kronendurchmesser extrahiert 
+und als strukturierte CSV-Datei gespeichert. Der gesamte Ablauf ist zeitlich protokolliert
+Zusätzlich werden für jede Verarbeitungsstufe Visualisierungen erzeugt (siehe utils.py), die eine Qualitätskontrolle und Nachvollziehbarkeit der Segmentierung ermöglichen. 
+'''
+
 import os
 import time
 import numpy as np

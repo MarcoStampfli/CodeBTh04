@@ -1,3 +1,13 @@
+"""
+Abstract:
+Dieses Skript segmentiert und analysiert Einzelbäume aus einer urbanen Punktwolke (z. B. LiDAR) mittels DBSCAN-Clustering und 
+extrahiert grundlegende Baumparameter wie Position, Höhe und Kronendurchmesser. Für jedes Cluster wird ein konvexer Rumpf berechnet, 
+aus dem die Kronendimensionen abgeleitet werden. Die Ergebnisse werden als CSV-Datei gespeichert. Zusätzlich erzeugt das Skript 
+verschiedene 3D-Visualisierungen: Die Punktwolke wird farblich nach Clustern und Noise unterschieden, Baumzentren werden als Sphären markiert, 
+und Screenshots der Szenen werden automatisiert gespeichert. Die Visualisierung erfolgt interaktiv mit Open3D und dient der 
+schnellen Qualitätskontrolle der Segmentierungsergebnisse.
+"""
+
 import os
 import time
 import numpy as np

@@ -1,3 +1,9 @@
+'''
+Das Skript nimmt eine Tabelle mit Baumparametern (Position, Höhe, Kronendurchmesser, Stammhöhe, Stammfarbe usw.) 
+und erzeugt für jeden Baum ein 3D-Modell aus Zylinder (Stamm) und Ellipsoid (Krone).
+Am Ende werden alle Bäume zu einem Gesamt-Mesh vereinigt und in verschiedene 
+3D-Formate (OBJ, PLY, optional STL) exportiert, zusätzlich ist eine direkte 3D-Visualisierung möglich.
+'''
 import open3d as o3d
 import numpy as np
 import pandas as pd
@@ -5,12 +11,15 @@ import os
 
 # --- Daten laden ---
 # input_path = r"arbeitspakete\02_segmentierung\01_Segm_Baeume\output\Baumdaten\02_baumdaten_Platte3_4244.csv"
-# input_path = r"arbeitspakete\02_segmentierung\01_Segm_Baeume\output\Baumdaten\02_v2_baumdaten_Platte3_3631.csv"
-input_path = r"arbeitspakete\02_segmentierung\01_Segm_Baeume\output\Baumdaten\02_v3_baumdaten_Platte3_5309.csv"
+input_path = r"arbeitspakete\02_segmentierung\01_Segm_Baeume\output\Baumdaten\02_v2_baumdaten_Platte3_3631.csv"
+# input_path = r"arbeitspakete\02_segmentierung\01_Segm_Baeume\output\Baumdaten\02_v3_baumdaten_Platte3_5309.csv"
 # input_path = r"arbeitspakete\02_segmentierung\01_Segm_Baeume\output\baumdaten_Platte3.csv"
-df = pd.read_csv(input_path) 
+df = pd.read_csv(input_path)
 
-file_name = "03_v3_baummodel_Platte3_5309"
+# Auflösung der Geometrie default 20
+resolution=5
+
+file_name = f"03_v3_baummodel_Platte3_5309_Aufl_{resolution}"
 output_dir = r"arbeitspakete\02_segmentierung\01_Segm_Baeume\output\Baumdaten"
 os.makedirs(output_dir, exist_ok=True)
 output_path = os.path.join(output_dir, file_name)
@@ -28,12 +37,12 @@ for _, row in df.iterrows():
     trunk_rgb = [row["Trunk_R"]/255, row["Trunk_G"]/255, row["Trunk_B"]/255]
 
     # Stamm (Zylinder)
-    cyl = o3d.geometry.TriangleMesh.create_cylinder(radius=trunk_d/2, height=trunk_h, resolution=20)
+    cyl = o3d.geometry.TriangleMesh.create_cylinder(radius=trunk_d/2, height=trunk_h, resolution=resolution)
     cyl.paint_uniform_color(trunk_rgb)
     cyl.translate((x, y, z0 + trunk_h/2))
 
     # Krone (Ellipsoid)
-    sph = o3d.geometry.TriangleMesh.create_sphere(radius=1.0, resolution=20)
+    sph = o3d.geometry.TriangleMesh.create_sphere(radius=1.0, resolution=resolution)
     sph.vertices = o3d.utility.Vector3dVector(
         np.asarray(sph.vertices) * np.array([crown_d/2, crown_d/2, crown_h/2])
     )
