@@ -1,0 +1,14 @@
+              precision    recall  f1-score   support
+
+       Bäume       0.55      0.70      0.61    267915
+     Fassade       0.00      0.00      0.00    120124
+   Flachdach       0.00      0.00      0.00      3692
+      Ground       0.55      0.95      0.70    291621
+  Schrägdach       0.00      0.00      0.00     70412
+     Strasse       0.00      0.00      0.00     46534
+    Trottoir       0.00      0.00      0.00     31508
+      Wasser       0.00      0.00      0.00     12266
+
+    accuracy                           0.55    844072
+   macro avg       0.14      0.21      0.16    844072
+weighted avg       0.36      0.55      0.44    844072
