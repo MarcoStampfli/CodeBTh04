@@ -17,7 +17,7 @@ input_path = r"arbeitspakete\02_segmentierung\01_Segm_Baeume\output\Baumdaten\02
 df = pd.read_csv(input_path)
 
 # Auflösung der Geometrie default 20
-resolution=5
+resolution=6
 
 file_name = f"03_v3_baummodel_Platte3_5309_Aufl_{resolution}"
 output_dir = r"arbeitspakete\02_segmentierung\01_Segm_Baeume\output\Baumdaten"

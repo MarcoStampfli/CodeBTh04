@@ -1,4 +1,12 @@
+'''Angelehnt an Literatur:
+Credit @ Lafarge, Florent und Mallet, Clement (2011): 
+Building large urban environments from unstructured point data. 
+2011 International Conference on Computer Vision. Barcelona, Spain: IEEE. S. 1068–1075. 
+doi:10.1109/ICCV.2011.6126353. [http://ieeexplore.ieee.org/document/6126353/; 26.5.2025].
 '''
+
+'''
+Abstract
 Im vorliegenden Workflow wird ein vollständig automatisierter Ansatz zur Detektion und Segmentierung einzelner Baumkronen aus 3D-Punktwolken vorgestellt. 
 Nach einer Vorfilterung der Punktwolke werden Vegetationspunkte mittels DBSCAN-Clustering zu potenziellen Einzelbäumen gruppiert und hinsichtlich 
 ihrer Durchmesser gefiltert. Aus den gefilterten Punkten wird ein Canopy Height Model (CHM) erzeugt, auf dem mit Hilfe von Glättung und 

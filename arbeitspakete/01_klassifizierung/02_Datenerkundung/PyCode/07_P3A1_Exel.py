@@ -3,7 +3,7 @@ import os
 from tqdm import tqdm
 
 # Ordner mit Daten
-ordner_pfad = "SeabornPlots/Klass_Platte_3_Ausschnitt_1/HSV_erweitert"
+ordner_pfad = "arbeitspakete\01_klassifizierung\02_Datenerkundung\input\Klass_Platte_3_Ausschnitt_1\HSV_erweitert"
 dateien = [f for f in os.listdir(ordner_pfad) if f.endswith(".txt")]
 output_excel = "Klassen_Statistiken_gesamt.xlsx"
 

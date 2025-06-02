@@ -1,5 +1,13 @@
-# 📌 Komplettes Script mit PCA-ausgerichteten OBBs (XY-planar)
-
+"""
+Abstract:
+Dieses Skript segmentiert Gebäude aus einer 3D-Punktwolke mittels KMeans-Clustering, 
+berechnet für jedes Cluster ein PCA-ausgerichtetes Oriented Bounding Box (OBB) und 
+gruppiert überlappende OBBs anschließend mithilfe von 2D-Polygon-Intersektion und 
+Graph-Analyse (Reclumping) zu zusammenhängenden Objekten. Die Ergebnisse werden durch
+verschiedene Visualisierungen in Open3D und als Screenshots dokumentiert. 
+Neben eingefärbten Punktwolken werden insbesondere die farbigen OBBs zur 
+räumlichen Einordnung ausgegeben. 
+"""
 import pandas as pd
 import numpy as np
 from tqdm import tqdm
@@ -146,7 +154,7 @@ max_label = max(reclump_labels_graph.values()) if reclump_labels_graph else 1
 if max_label == 0:
     max_label = 1  # Schutz vor Division durch 0
 if len(set(reclump_labels_graph.values())) <= 1:
-    print("⚠️ Warnung: Nur eine oder keine Clustergruppe erkannt. Farben ggf. ungenau.")
+    print("Warnung: Nur eine oder keine Clustergruppe erkannt. Farben ggf. ungenau.")
 
 for cid, obb in cluster_obb.items():
     label = reclump_labels_graph.get(cid, -1)
