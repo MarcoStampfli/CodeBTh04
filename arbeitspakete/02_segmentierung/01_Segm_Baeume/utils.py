@@ -22,6 +22,62 @@ def zeit(start, stop=None, msg=str("")):
     print(f"{msg}Dauer: {minutes} Minuten und {seconds:.2f} Sekunden")
     return stop
 
+import os
+import pandas as pd
+import matplotlib.pyplot as plt
+
+def verify_tree_positions2(output_dir, txt_path, csv_path, height_filter=int(4), filename="step0_PW_vs_Kataster.png"):
+    """
+    Prüft, ob die Baumkataster-Koordinaten korrekt auf die Punktwolke passen,
+    und entfernt die numerischen Achsenbeschriftungen.
+
+    Parameter:
+    output_dir     : Zielordner zum Speichern
+    txt_path       : Pfad zur Punktwolke als .txt mit Spalten X Y Z (Easting, Northing, Höhe)
+    csv_path       : Pfad zur baumdaten_watershed.csv mit Spalten ID E N H DM
+    height_filter  : nur hohe Punkte anzeigen (Visualisierung)
+    filename       : Name der Ausgabedatei (PNG)
+    """
+    print("Lade Punktwolke ...")
+    df_pts = pd.read_csv(txt_path, delimiter=";", header=None, names=["X", "Y", "Z"])
+    df_pts = df_pts[df_pts["Z"] > height_filter]  # nur hohe Punkte anzeigen
+
+    print("Lade Baumdaten ...")
+    df_trees = pd.read_csv(csv_path, delimiter=",", header=0,
+                           names=["Tree_ID", "E", "N", "Height_m", "Crown_Diameter_m"])
+    
+    fontsize = 18
+    pad_inches = fontsize / 72 / 2
+
+    print("Erzeuge Plot ...")
+    plt.figure(figsize=(14, 10))
+    plt.scatter(df_pts["X"], df_pts["Y"], s=0.2, c='green', label="Punktwolke")
+    plt.scatter(df_trees["E"], df_trees["N"], s=12, c='orange', label="Baumkataster")
+    # plt.xlabel("Easting [m]")
+    # plt.ylabel("Northing [m]")
+    plt.legend()
+    plt.axis('equal') # 'equal'
+    plt.title("Verifikation: Baumkataster über Punktwolke", fontsize=fontsize)
+    plt.grid(False)
+
+    # Entferne die numerischen Achsenbeschriftungen
+    plt.xticks([])  # X-Tick-Labels ausblenden
+    plt.yticks([])  # Y-Tick-Labels ausblenden
+
+    # … nach plt.grid(False) und vor plt.savefig …
+    plt.tight_layout()  # passt alle Ränder an
+
+    # Plot speichern und Weißraum um das Bild herum abschneiden
+    file_path = os.path.join(output_dir, filename)
+    plt.savefig(
+        file_path,
+        dpi=300,
+        bbox_inches='tight',  # schneidet außen rum alles weg
+        pad_inches=pad_inches          # Abstand zum Bild auf null setzen
+    )
+    plt.close()
+
+
 
 def verify_tree_positions(output_dir, txt_path, csv_path, height_filter=int(4)):
     """

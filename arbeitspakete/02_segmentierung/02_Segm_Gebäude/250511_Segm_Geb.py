@@ -23,9 +23,9 @@ from shapely.geometry import Polygon
 
 # === Parameter ===
 input_path = r"arbeitspakete\02_segmentierung\02_Segm_Gebäude\input\P3A1_Gebaeude_normalisiert.txt"
-num_kmeans_clusters = 200 # falls Gebàude noch zusammen, dann héher gehen
+num_kmeans_clusters = 200 # falls Gebäude noch zusammen, dann höher gehen
 # input_path = r"arbeitspakete\02_segmentierung\02_Segm_Gebäude\input\Input__PW_Klasse_13_kmeans_normalisiert.txt"
-# num_kmeans_clusters = 5000 # falls Gebàude noch zusammen, dann héher gehen
+# num_kmeans_clusters = 5000 # falls Gebäude noch zusammen, dann höher gehen
 #num_reclump_clusters = 15
 code = f"Seg_P3A1_Geb_KMeans_{num_kmeans_clusters}_OBB_ReClump_"
 

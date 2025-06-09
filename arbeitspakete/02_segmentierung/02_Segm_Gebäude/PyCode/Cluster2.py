@@ -17,7 +17,7 @@ from shapely.geometry import Polygon
 input_path = r"arbeitspakete\02_segmentierung\02_Segm_Gebäude\input\P3A1_Gebaeude.txt"
 num_kmeans_clusters = 100
 num_reclump_clusters = 15
-delta_aabb = 2.0  # Toleranz für BoundingBox-Adjazenz (Meter)
+# delta_aabb = 2.0  # Toleranz für BoundingBox-Adjazenz (Meter)
 code = "XY"
 
 # === Schritt 1: Daten einlesen ===

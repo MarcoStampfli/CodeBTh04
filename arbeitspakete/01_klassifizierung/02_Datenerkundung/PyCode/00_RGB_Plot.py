@@ -4,10 +4,11 @@ import pandas as pd
 import os
 
 # Datei laden
-file_path = r"C:\Users\st1174360\Documents\BTh_04_Vis\SeabornPlots\PW_KOO_RGB_HSV_norm.txt"
+file_path = r"arbeitspakete\01_klassifizierung\02_Datenerkundung\input\PW_KOO_RGB_HSV_norm.txt"
 df = pd.read_csv(file_path, delimiter=";", decimal=".", header=None)
 
-output_folder = "Diagramme"
+fill = False # LinienDiagramm = False
+output_folder = r"arbeitspakete\01_klassifizierung\02_Datenerkundung\onput\Diagramme"
 os.makedirs(output_folder, exist_ok=True)
 
 # Spaltennamen setzen
@@ -26,21 +27,21 @@ sns.kdeplot(
     df["Red color (0-255)"],
     label="Rot",
     color="red",
-    fill=True,
+    fill=fill,
     clip=(0, 255)
 )
 sns.kdeplot(
     df["Green color (0-255)"],
     label="Grün",
     color="green",
-    fill=True,
+    fill=fill,
     clip=(0, 255)
 )
 sns.kdeplot(
     df["Blue color (0-255)"],
     label="Blau",
     color="blue",
-    fill=True,
+    fill=fill,
     clip=(0, 255)
 )
 
@@ -55,6 +56,6 @@ plt.ylabel("Dichte")
 plt.legend()
 
 # Speichern und Anzeigen
-output_path = os.path.join(output_folder, "Dichteverteilung_RGB.png")
+output_path = os.path.join(output_folder, "Dichteverteilung_RGB_Liniendia.png")
 plt.savefig(output_path, dpi=300, bbox_inches='tight')
 plt.show()
