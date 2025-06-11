@@ -28,11 +28,19 @@ mesh.compute_vertex_normals()
 pcd_tree = o3d.geometry.KDTreeFlann(pcd)
 
 # Farben auf Mesh-Vertices übertragen
+radius = 0.5  # z.B. 5 cm (anpassen je nach Maßstab)
 mesh_colors = []
 for v in mesh.vertices:
-    _, idx, _ = pcd_tree.search_knn_vector_3d(v, 1)
-    mesh_colors.append(pcd.colors[idx[0]])
+    [_, idx, _] = pcd_tree.search_radius_vector_3d(v, radius)
+    if len(idx) > 0:
+        colors_neigh = np.asarray(pcd.colors)[idx]
+        mean_color = np.mean(colors_neigh, axis=0)
+        mesh_colors.append(mean_color)
+    else:
+        # Fallback: Standardfarbe, z.B. grau
+        mesh_colors.append([0.5, 0.5, 0.5])
 mesh.vertex_colors = o3d.utility.Vector3dVector(np.array(mesh_colors))
+
 
 # Mesh speichern
 o3d.io.write_triangle_mesh(mesh_output, mesh, write_vertex_colors=True)
