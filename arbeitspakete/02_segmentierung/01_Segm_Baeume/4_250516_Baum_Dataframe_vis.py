@@ -13,9 +13,10 @@ import numpy as np
 import pandas as pd
 
 # --- Terrain-Mesh laden und optional färben ---
+mesh_output = r"arbeitspakete\02_segmentierung\01_Segm_Baeume\output\Version_1_Mesh_textur.obj"
 mesh_path = r"arbeitspakete\02_segmentierung\01_Segm_Baeume\input\Version_1.obj"
 mesh_legacy = o3d.io.read_triangle_mesh(mesh_path)
-mesh_legacy.paint_uniform_color([0.8, 0.8, 0.8])  # Hellgrau
+# mesh_legacy.paint_uniform_color([0.8, 0.8, 0.8])  # Hellgrau
 
 # --- Daten laden ---
 # input_csv = r"arbeitspakete\02_segmentierung\01_Segm_Baeume\output\Baumdaten\baumdaten_Platte3_4244.csv"
