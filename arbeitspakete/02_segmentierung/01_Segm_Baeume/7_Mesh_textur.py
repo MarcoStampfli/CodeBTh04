@@ -4,7 +4,7 @@ import numpy as np
 # Dateipfade
 mesh_path = r"arbeitspakete\02_segmentierung\01_Segm_Baeume\input\Mesh_Boden.obj"
 pc_csv_path = r"arbeitspakete\02_segmentierung\01_Segm_Baeume\input\Boden.csv"
-mesh_output = r"arbeitspakete\02_segmentierung\01_Segm_Baeume\output\Version_1_Mesh_textur.obj"
+mesh_output = r"arbeitspakete\02_segmentierung\01_Segm_Baeume\output\Version_2_Mesh_textur.obj"
 
 # Punktwolke aus CSV laden (XYZRGB, z.B. als 6 Spalten)
 data = np.loadtxt(pc_csv_path, delimiter=';')

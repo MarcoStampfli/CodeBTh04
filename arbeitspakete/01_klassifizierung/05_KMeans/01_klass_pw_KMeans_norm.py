@@ -21,9 +21,9 @@ df.columns = ["X coordinate", "Y coordinate", "Z coordinate",
             "X scan dir", "Y scan dir", "Z scan dir"]
 
 # Anzahl der Cluster definieren
-num_clusters = 2  # Kann auf 6-10 angepasst werden
-fit = df[["Hue (0-1)"]] # Fit Variablen
-fitcode = "H"
+num_clusters = 3  # Kann auf 6-10 angepasst werden
+fit = df[["Hue (0-1)", "Z scan dir"]] # Fit Variablen
+fitcode = "HZ"
 
 # Progressbar für K-Means
 print("Starte K-Means Clustering...")
@@ -36,8 +36,8 @@ with tqdm(total=100, desc="Clustering") as pbar:
 # Neue Datei speichern (mit Farbklassen, ohne Header)
 output_folder = r"arbeitspakete\01_klassifizierung\05_KMeans\output\KMeans_Clustered_Files"+f"_{num_clusters}_fit_{fitcode}"
 os.makedirs(output_folder, exist_ok=True)
-output_path = os.path.join(output_folder, f"kmeans_clustered_{fitcode}_punktwolke.txt")
-df.to_csv(output_path, sep=";", index=False, decimal=".", header=False)
+# output_path = os.path.join(output_folder, f"kmeans_clustered_{fitcode}_punktwolke.txt")
+# df.to_csv(output_path, sep=";", index=False, decimal=".", header=False)
 
 # print(f"Datei mit KMeans-Farbklassen gespeichert als: {output_path}")
 
