@@ -117,7 +117,8 @@ for ax, dateiname in zip(axes1, dateien_subset1):
         elif w == 240:
             labels.append("Blau")
         else:
-            labels.append(f"{w}°")
+            labels.append("")
+            # labels.append(f"{w}°")
     ax.set_xticklabels(labels)
     
     # 1.5) Titel pro Subplot (fett)
@@ -126,7 +127,7 @@ for ax, dateiname in zip(axes1, dateien_subset1):
 
 plt.tight_layout()
 # 1.6) Grafik abspeichern (im aktuellen Arbeitsverzeichnis)
-plot_path1 = os.path.join(output_pfad, "HUE_diagramm_Schraegdach_Wasser_RGB_Balken.png")
+plot_path1 = os.path.join(output_pfad, "V2_HUE_diagramm_Schraegdach_Wasser_RGB_Balken.png")
 fig1.savefig(plot_path1, dpi=300, bbox_inches='tight')
 plt.show()
 
@@ -187,7 +188,8 @@ for idx, dateiname in enumerate(dateien_subset2):
         elif w == 240:
             labels.append("Blau")
         else:
-            labels.append(f"{w}°")
+            labels.append("")
+            # labels.append(f"{w}°")
     ax.set_xticklabels(labels)
     
     # 2.5) Titel pro Subplot (fett)
@@ -202,6 +204,34 @@ for idx_extra in range(n_rest, len(axes2)):
 plt.tight_layout()
 plt.subplots_adjust(top=0.85, hspace=0.4)
 
-plot_path2 = os.path.join(output_pfad, "HUE_diagramm_restl_Klassen_RGB_Balken.png")
-fig2.savefig(plot_path2, dpi=300, bbox_inches='tight')
-plt.show()
+# plot_path2 = os.path.join(output_pfad, "V2_HUE_diagramm_restl_Klassen_RGB_Balken.png")
+# fig2.savefig(plot_path2, dpi=300, bbox_inches='tight')
+# plt.show()
+
+# ------------------------------
+# 3) Statistik: Klasse, Mittelwert (Hue in Grad), Dichte aus echten Werten in dominanten Bins
+print("\n--- Statistik: Dominanteste Bins je Klasse ---")
+print(f"{'Klasse':<20} {'Mittelwert (°)':>15} {'Dichte':>10}")
+
+# Hilfsfunktion zur Umrechnung Radiant → Grad im Bereich [0, 360)
+def rad_to_deg(rad_array):
+    return (np.rad2deg(rad_array) + 360) % 360
+
+for dateiname in dateien:
+    klasse = get_klasse(dateiname)
+    hues_rad = hues_rad_dict[dateiname]
+    counts, _ = np.histogram(hues_rad, bins=bins_rad, density=True)
+
+    max_density = np.max(counts)
+    dominant_bins_idx = np.where(counts == max_density)[0]  # Indizes der dominanten Bins
+
+    # Alle Hue-Werte, die in diesen dominanten Bins liegen
+    mask = np.zeros_like(hues_rad, dtype=bool)
+    for i in dominant_bins_idx:
+        in_bin = (hues_rad >= bins_rad[i]) & (hues_rad < bins_rad[i+1])
+        mask |= in_bin
+
+    hues_in_dominant = hues_rad[mask]
+    mean_deg = np.mean(rad_to_deg(hues_in_dominant))
+
+    print(f"{klasse:<20} {mean_deg:15.2f} {max_density:10.3f}")

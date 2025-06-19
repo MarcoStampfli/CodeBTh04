@@ -66,7 +66,7 @@ def main():
     # Stelle sicher, dass der Ordner existiert:
     os.makedirs(output_pfad, exist_ok=True)
     # dateiname = "RGB_und_Grauwert_Kacheln_pro_Klasse_wissenschaftlich.png"
-    dateiname = "RGB_und_Grauwert_Kacheln_pro_Klasse_mensch.png"
+    dateiname = "Doku_RGB_und_Grauwert_Kacheln_pro_Klasse.png"
     datei_pfad = os.path.join(output_pfad, dateiname)
 
 
@@ -123,7 +123,7 @@ def main():
 
     # ------------------------------
     # 💾 Speichern
-    fig.suptitle("Durchschnittliche RGB- & Grauwert-Kacheln pro Klasse", fontsize=14, y=1.05)
+    fig.suptitle("Durchschnittliche RGB-Farben & Grauwerte pro Klasse", fontsize=14, y=1.05)
     plt.tight_layout()
     fig.savefig(datei_pfad, dpi=300, bbox_inches='tight')
     print(f"✅ Grafik gespeichert als '{dateipfad}'")

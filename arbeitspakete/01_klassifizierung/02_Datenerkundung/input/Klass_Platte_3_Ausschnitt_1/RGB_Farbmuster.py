@@ -1,46 +1,14 @@
-
-"""
-Skript: Durchschnittliche RGB-Farben pro Klasse als farbige Kacheln darstellen
-
-Dieses Skript liest alle .txt-Dateien in einem angegebenen Ordner ein (jede Datei enthält
-pro Pixel XY Z-Koordinaten, RGB- und HSV-Werte). Für jede Klasse wird der Durchschnitt der
-RGB-Farben berechnet und dann in einer Grafik als gleich große farbige Kachel dargestellt.
-Unter jeder Kachel steht der Klassenname als Untertitel.
-
-Voraussetzungen:
-- Die Textdateien liegen im Ordner `ordner_pfad` und sind semikolon-getrennt.
-- Beim Einlesen mit Pandas entstehen genau 12 Spalten in der Reihenfolge
-  [X, Y, Z, R, G, B, Xscan, Yscan, Zscan, Hue, Saturation, Value].
-- Der Klassenname wird aus dem Dateinamen gewonnen, indem "_HSV.txt" abgeschnitten
-  und der letzte Unterstrich-Teil verwendet wird (z. B. "…_Bäume_HSV.txt" → "Bäume").
-
-Einsatz:
-    python plot_rgb_tiles_per_class.py
-
-Autor: ChatGPT (angepasst auf Nutzerwunsch)
-Datum: 2025-06-02
-"""
-
 import os
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
+import math
 
 def get_klasse(dateiname: str) -> str:
-    """
-    Extrahiert den Klassennamen aus dem Dateinamen.
-    Beispiel:
-        "XYZ_Bäume_HSV.txt" → "Bäume"
-    """
     basis = dateiname.replace("_HSV.txt", "")
     return basis.split("_")[-1]
 
 def lade_mittel_rgb(dateipfad: str, sep: str = ";") -> tuple:
-    """
-    Liest eine HSV-Datei ein und gibt den normalisierten RGB-Mittelwert zurück.
-    Erwartet beim Einlesen 12 Spalten:
-      [X, Y, Z, R, G, B, Xscan, Yscan, Zscan, Hue, Saturation, Value]
-    """
     df = pd.read_csv(dateipfad, sep=sep, decimal=".", header=None)
     if df.shape[1] != 12:
         raise ValueError(
@@ -52,7 +20,6 @@ def lade_mittel_rgb(dateipfad: str, sep: str = ";") -> tuple:
         "X scan dir", "Y scan dir", "Z scan dir",
         "Hue (°)", "Saturation (%)", "Value (%)"
     ]
-    # Durchschnitt der RGB-Werte und Normierung auf [0..1]
     rgb_mean = df[["Red color (0-255)", "Green color (0-255)", "Blue color (0-255)"]].mean()
     mean_rgb = (
         rgb_mean["Red color (0-255)"] / 255.0,
@@ -64,12 +31,9 @@ def lade_mittel_rgb(dateipfad: str, sep: str = ";") -> tuple:
 def main():
     # ------------------------------
     # 1) Einstellungen: Pfade und Parameter
-    # Pfad zu deinem Ordner mit den HSV-Textdateien
     ordner_pfad = r"arbeitspakete\01_klassifizierung\02_Datenerkundung\input\Klass_Platte_3_Ausschnitt_1\HSV_erweitert"
-    sep = ";"  # Separator zum Einlesen der TXT-Dateien
-
-    # Name der Ausgabedatei (PNG)
-    output_png = "RGB_Kacheln_pro_Klasse.png"
+    sep = ";"
+    output_png = "RGB_Kacheln_pro_Klasse_2row.png"
 
     # ------------------------------
     # 2) Einlesen der Dateinamen und Berechnung der Mittel-RGB-Werte
@@ -88,48 +52,52 @@ def main():
         mean_rgbs.append(mean_rgb)
 
     # ------------------------------
-    # 3) Plot-Vorbereitung: Anzahl der Klassen ermitteln
+    # 3) Plot-Vorbereitung: 4 Kacheln pro Zeile
     n = len(klassen)
-    # Bestimme das Gitternetz: eine Reihe mit n Spalten
+    kacheln_pro_zeile = 4
+    n_zeilen = math.ceil(n / kacheln_pro_zeile)
+
     fig, axes = plt.subplots(
-        nrows=1,
-        ncols=n,
-        figsize=(n * 2, 3),     # Jede Kachel ca. 2 Zoll breit, Höhe insgesamt 3 Zoll
-        gridspec_kw={'wspace': 0}  # horizontaler Abstand zwischen den Kacheln
+        nrows=n_zeilen,
+        ncols=kacheln_pro_zeile,
+        figsize=(kacheln_pro_zeile * 2.2, n_zeilen * 2.2),     # Größe pro Kachel
+        gridspec_kw={'wspace': 0.1, 'hspace': 0.2}
     )
 
-    # Falls nur eine Klasse, stellen wir axes zu einer Liste um
-    if n == 1:
-        axes = [axes]
+    # Bei nur einer Zeile axes zu 2D-Liste machen
+    if n_zeilen == 1:
+        axes = np.array([axes])
 
     # ------------------------------
     # 4) Für jede Klasse eine Kachel einfärben und Namen darunter schreiben
-    for ax, klasse, rgb in zip(axes, klassen, mean_rgbs):
-        # 4.1) Volle Fläche einfärben
+    for idx, (klasse, rgb) in enumerate(zip(klassen, mean_rgbs)):
+        zeile = idx // kacheln_pro_zeile
+        spalte = idx % kacheln_pro_zeile
+        ax = axes[zeile, spalte]
         ax.set_facecolor(rgb)
-
-        # 4.2) Achsen unsichtbar schalten (kein Ticks, keine Linien)
         ax.set_xticks([])
         ax.set_yticks([])
         for spine in ax.spines.values():
             spine.set_visible(False)
-
-        # 4.3) Klassenname als Untertitel (zentriert unten)
-        #      Wir platzieren den Text etwas außerhalb des Achsenbereichs (transform=ax.transAxes)
         ax.text(
-            0.5, -0.15, klasse,
+            0.5, -0.05, klasse,
             transform=ax.transAxes,
             ha='center', va='top',
-            fontsize=11, fontweight='bold'
+            fontsize=14, fontweight='bold'
         )
+
+    # Überzählige leere Achsen ausblenden (wenn z.B. 7 Klassen → 1 leeres Feld)
+    for idx in range(n, n_zeilen * kacheln_pro_zeile):
+        zeile = idx // kacheln_pro_zeile
+        spalte = idx % kacheln_pro_zeile
+        axes[zeile, spalte].axis('off')
 
     # ------------------------------
     # 5) Gesamt-Titel und Speicherung
-    fig.suptitle("Durchschnittliche RGB-Farben pro Klasse", fontsize=14, y=1.02)
+    fig.suptitle("Durchschnittliche RGB-Farben pro Klasse", fontsize=18, y=1.02)
     plt.tight_layout()
     fig.savefig(output_png, dpi=300, bbox_inches='tight')
     print(f"Die Grafik wurde gespeichert als '{output_png}'")
-    # plt.show()  # Optional: interaktive Anzeige
 
 if __name__ == "__main__":
     main()

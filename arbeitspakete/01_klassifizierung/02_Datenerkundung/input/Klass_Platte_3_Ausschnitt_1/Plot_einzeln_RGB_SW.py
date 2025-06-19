@@ -1,0 +1,103 @@
+import os
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+
+def srgb_to_linear(c: float) -> float:
+    return c / 12.92 if c <= 0.04045 else ((c + 0.055) / 1.055) ** 2.4
+
+def berechne_grauwert_wissenschaftlich(rgb: tuple) -> tuple:
+    r_lin = srgb_to_linear(rgb[0])
+    g_lin = srgb_to_linear(rgb[1])
+    b_lin = srgb_to_linear(rgb[2])
+    gray = 0.2126 * r_lin + 0.7152 * g_lin + 0.0722 * b_lin
+    return (gray, gray, gray)
+
+def berechne_grauwert_menschlich(rgb: tuple) -> tuple:
+    gray = 0.299 * rgb[0] + 0.587 * rgb[1] + 0.114 * rgb[2]
+    return (gray, gray, gray)
+
+def get_klasse(dateiname: str) -> str:
+    basis = dateiname.replace("_HSV.txt", "")
+    return basis.split("_")[-1]
+
+def lade_mittel_rgb(dateipfad: str, sep: str = ";") -> tuple:
+    df = pd.read_csv(dateipfad, sep=sep, decimal=".", header=None)
+    if df.shape[1] != 12:
+        raise ValueError(f"Datei '{os.path.basename(dateipfad)}' liefert {df.shape[1]} Spalten statt 12.")
+    df.columns = [
+        "X", "Y", "Z", "R", "G", "B",
+        "Xscan", "Yscan", "Zscan",
+        "Hue", "Saturation", "Value"
+    ]
+    rgb_mean = df[["R", "G", "B"]].mean()
+    return (
+        rgb_mean["R"] / 255.0,
+        rgb_mean["G"] / 255.0,
+        rgb_mean["B"] / 255.0
+    )
+
+def erstelle_kachelbild(farben, klassen, titel, ausgabe_pfad):
+    n = len(klassen)
+    tile_size = 4  # Größe jeder Kachel (in Zoll)
+
+    fig, axes = plt.subplots(
+        nrows=1,
+        ncols=n,
+        figsize=(n * tile_size, tile_size),  # quadratisch
+        gridspec_kw={'wspace': 0}
+    )
+    
+    if n == 1:
+        axes = [axes]
+
+    for ax, farbe, klasse in zip(axes, farben, klassen):
+        ax.set_facecolor(farbe)
+        ax.set_xticks([]); ax.set_yticks([])
+        for spine in ax.spines.values():
+            spine.set_visible(False)
+        ax.set_title(klasse, fontsize=11, fontweight='bold')
+        ax.set_aspect('equal')  # ⬅ wichtig: erzwingt quadratische Achsen
+
+    fig.suptitle(titel, fontsize=14, y=1.08)
+    plt.tight_layout()
+    fig.savefig(ausgabe_pfad, dpi=300, bbox_inches='tight')
+    print(f"✅ Gespeichert: {ausgabe_pfad}")
+    plt.close(fig)
+
+def main():
+    # 🔧 Einstellungen
+    ordner_pfad = r"arbeitspakete\01_klassifizierung\02_Datenerkundung\input\Klass_Platte_3_Ausschnitt_1\HSV_erweitert"
+    output_pfad = r"arbeitspakete\01_klassifizierung\02_Datenerkundung\output"
+    os.makedirs(output_pfad, exist_ok=True)
+    sep = ";"
+
+    # 📥 Daten einlesen
+    dateien = [f for f in os.listdir(ordner_pfad) if f.endswith(".txt")]
+    if not dateien:
+        raise FileNotFoundError(f"Keine .txt-Dateien in '{ordner_pfad}' gefunden.")
+
+    klassen, mean_rgbs, grau_mensch, grau_wissenschaft = [], [], [], []
+
+    for dateiname in dateien:
+        klasse = get_klasse(dateiname)
+        pfad = os.path.join(ordner_pfad, dateiname)
+        rgb = lade_mittel_rgb(pfad, sep=sep)
+
+        klassen.append(klasse)
+        mean_rgbs.append(rgb)
+        grau_mensch.append(berechne_grauwert_menschlich(rgb))
+        grau_wissenschaft.append(berechne_grauwert_wissenschaftlich(rgb))
+
+    # 🖼 Exportiere jede Zeile als eigenes Bild
+    erstelle_kachelbild(mean_rgbs, klassen, "RGB-Mittelwerte pro Klasse",
+                        os.path.join(output_pfad, "Doku_rgb_kacheln.png"))
+
+    erstelle_kachelbild(grau_mensch, klassen, "Grauwert pro Klasse",
+                        os.path.join(output_pfad, "Doku_grauwert_kacheln.png"))
+
+    erstelle_kachelbild(grau_wissenschaft, klassen, "Grauwert pro Klasse (wissenschaftlich rec709) ",
+                        os.path.join(output_pfad, "grauwert_wissenschaft_rec709_kacheln.png"))
+
+if __name__ == "__main__":
+    main()
