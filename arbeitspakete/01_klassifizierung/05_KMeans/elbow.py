@@ -2,7 +2,12 @@ import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 from sklearn.cluster import KMeans
-
+# ================================================================
+# Beschreibung:     BTH 04 - Rekonstruktion Stadtmodell Basel 1960
+# Erstellt mit:     Unterstützung durch ChatGPT (OpenAI)
+# Version:          GPT-4, Juni 2025
+# Autor:            Marco Stampfli und Vania Fernandes Pereira
+# ================================================================
 # Pfad zur normalisierten Punktwolke (HSV-Daten)
 file_path = r"C:\Users\st1174360\Documents\BTh_04\250327_Normalisieren\output\PW_P3A1_normalisiert.txt"
 # 1. Daten einlesen

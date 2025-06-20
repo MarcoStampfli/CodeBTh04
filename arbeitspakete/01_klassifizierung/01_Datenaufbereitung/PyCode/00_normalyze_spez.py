@@ -2,6 +2,13 @@ import pandas as pd
 import colorsys
 from pathlib import Path
 
+# ================================================================
+# Beschreibung:     BTH 04 - Rekonstruktion Stadtmodell Basel 1960
+# Erstellt mit:     Unterstützung durch ChatGPT (OpenAI)
+# Version:          GPT-4, Juni 2025
+# Autor:            Marco Stampfli und Vania Fernandes Pereira
+# ================================================================
+
 # === EINSTELLUNGEN ===
 input_folder = Path("./input/Klass_Platte_3_Ausschnitt_1")  # Ordner mit den TXT-Dateien
 output_folder = Path("./output")  # Zielordner für die normalisierten Dateien

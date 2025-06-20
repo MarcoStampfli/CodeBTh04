@@ -1,3 +1,9 @@
+# ================================================================
+# Beschreibung:     BTH 04 - Rekonstruktion Stadtmodell Basel 1960
+# Erstellt mit:     Unterstützung durch ChatGPT (OpenAI)
+# Version:          GPT-4, Juni 2025
+# Autor:            Marco Stampfli und Vania Fernandes Pereira
+# ================================================================
 '''Angelehnt an Literatur:
 Credit @ Lafarge, Florent und Mallet, Clement (2011): 
 Building large urban environments from unstructured point data. 

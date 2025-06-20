@@ -5,6 +5,13 @@ import matplotlib.pyplot as plt
 import time
 import os
 
+# ================================================================
+# Beschreibung:     BTH 04 - Rekonstruktion Stadtmodell Basel 1960
+# Erstellt mit:     Unterstützung durch ChatGPT (OpenAI)
+# Version:          GPT-4, Juni 2025
+# Autor:            Marco Stampfli und Vania Fernandes Pereira
+# ================================================================
+
 def zeit(start, stop=None, msg=str("")):
     """
     Rechnet Prozesszeiten aus und macht ein Console-Log

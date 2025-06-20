@@ -8,6 +8,13 @@ import matplotlib.pyplot as plt
 from pathlib import Path
 # import open3d as o3d
 
+# ================================================================
+# Beschreibung:     BTH 04 - Rekonstruktion Stadtmodell Basel 1960
+# Erstellt mit:     Unterstützung durch ChatGPT (OpenAI)
+# Version:          GPT-4, Juni 2025
+# Autor:            Marco Stampfli und Vania Fernandes Pereira
+# ================================================================
+
 # Startzeit für die Laufzeitmessung
 start_time = time.time()
 

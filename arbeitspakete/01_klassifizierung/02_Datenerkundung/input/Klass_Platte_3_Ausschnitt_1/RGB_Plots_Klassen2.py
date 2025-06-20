@@ -1,4 +1,9 @@
-
+# ================================================================
+# Beschreibung:     BTH 04 - Rekonstruktion Stadtmodell Basel 1960
+# Erstellt mit:     Unterstützung durch ChatGPT (OpenAI)
+# Version:          GPT-4, Juni 2025
+# Autor:            Marco Stampfli und Vania Fernandes Pereira
+# ================================================================
 """
 Skript: Durchschnittliche RGB-Farben pro Klasse als farbige Kacheln darstellen
 

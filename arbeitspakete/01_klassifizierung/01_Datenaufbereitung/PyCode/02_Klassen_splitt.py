@@ -1,5 +1,11 @@
 import pandas as pd
 import os
+# ================================================================
+# Beschreibung:     BTH 04 - Rekonstruktion Stadtmodell Basel 1960
+# Erstellt mit:     Unterstützung durch ChatGPT (OpenAI)
+# Version:          GPT-4, Juni 2025
+# Autor:            Marco Stampfli und Vania Fernandes Pereira
+# ================================================================
 
 # Datei mit Clustering-Ergebnissen laden
 file_path = "PW_8_Klassen.txt"  # Falls der Name anders ist, bitte anpassen

@@ -1,3 +1,9 @@
+# ================================================================
+# Beschreibung:     BTH 04 - Rekonstruktion Stadtmodell Basel 1960
+# Erstellt mit:     Unterstützung durch ChatGPT (OpenAI)
+# Version:          GPT-4, Juni 2025
+# Autor:            Marco Stampfli und Vania Fernandes Pereira
+# ================================================================
 '''
 Das Skript nimmt eine Tabelle mit Baumparametern (Position, Höhe, Kronendurchmesser, Stammhöhe, Stammfarbe usw.) 
 und erzeugt für jeden Baum ein 3D-Modell aus Zylinder (Stamm) und Ellipsoid (Krone).

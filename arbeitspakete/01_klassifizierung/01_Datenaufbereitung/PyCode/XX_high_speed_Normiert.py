@@ -3,6 +3,13 @@ import colorsys
 import numpy as np
 import time
 
+# ================================================================
+# Beschreibung:     BTH 04 - Rekonstruktion Stadtmodell Basel 1960
+# Erstellt mit:     Unterstützung durch ChatGPT (OpenAI)
+# Version:          GPT-4, Juni 2025
+# Autor:            Marco Stampfli und Vania Fernandes Pereira
+# ================================================================
+
 start_total = time.time()
 
 # Datei einlesen (Semikolon-getrennt, ohne Header)

@@ -1,8 +1,14 @@
+# ================================================================
+# Beschreibung:     BTH 04 - Rekonstruktion Stadtmodell Basel 1960
+# Erstellt mit:     Unterstützung durch ChatGPT (OpenAI)
+# Version:          GPT-4, Juni 2025
+# Autor:            Marco Stampfli und Vania Fernandes Pereira
+# ================================================================
 """
 Abstract:
 Dieses Skript segmentiert Gebäude aus einer 3D-Punktwolke mittels KMeans-Clustering, 
 berechnet für jedes Cluster ein PCA-ausgerichtetes Oriented Bounding Box (OBB) und 
-gruppiert überlappende OBBs anschließend mithilfe von 2D-Polygon-Intersektion und 
+gruppiert überlappende OBBs anschliessend mithilfe von 2D-Polygon-Intersektion und 
 Graph-Analyse (Reclumping) zu zusammenhängenden Objekten. Die Ergebnisse werden durch
 verschiedene Visualisierungen in Open3D und als Screenshots dokumentiert. 
 Neben eingefärbten Punktwolken werden insbesondere die farbigen OBBs zur 

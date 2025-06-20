@@ -1,4 +1,9 @@
-# -*- coding: utf-8 -*-
+# ================================================================
+# Beschreibung:     BTH 04 - Rekonstruktion Stadtmodell Basel 1960
+# Erstellt mit:     Unterstützung durch ChatGPT (OpenAI)
+# Version:          GPT-4, Juni 2025
+# Autor:            Marco Stampfli und Vania Fernandes Pereira
+# ================================================================
 """
 Automatische Tabellenerstellung aus Ordnerstruktur
 mit Einbettung von Bildern und angepasster Zeilenhöhe in Excel (.xlsx)

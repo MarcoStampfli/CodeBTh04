@@ -1,3 +1,9 @@
+# ================================================================
+# Beschreibung:     BTH 04 - Rekonstruktion Stadtmodell Basel 1960
+# Erstellt mit:     Unterstützung durch ChatGPT (OpenAI)
+# Version:          GPT-4, Juni 2025
+# Autor:            Marco Stampfli und Vania Fernandes Pereira
+# ================================================================
 """
 Abstract:
 Dieses Skript vereinigt mehrere Listen einzelner Baumdetektionen aus verschiedenen Segmentierungsläufen zu einer bereinigten Gesamtliste. 

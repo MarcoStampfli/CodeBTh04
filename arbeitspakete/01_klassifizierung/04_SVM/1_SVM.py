@@ -3,7 +3,12 @@ import numpy as np
 import glob
 from sklearn.svm import SVC
 import open3d as o3d
-
+# ================================================================
+# Beschreibung:     BTH 04 - Rekonstruktion Stadtmodell Basel 1960
+# Erstellt mit:     Unterstützung durch ChatGPT (OpenAI)
+# Version:          GPT-4, Juni 2025
+# Autor:            Marco Stampfli und Vania Fernandes Pereira
+# ================================================================
 # -----------------------------------
 # 1. Trainingsdaten aus mehreren Dateien laden
 # -----------------------------------

@@ -1,3 +1,9 @@
+# ================================================================
+# Beschreibung:     BTH 04 - Rekonstruktion Stadtmodell Basel 1960
+# Erstellt mit:     Unterstützung durch ChatGPT (OpenAI)
+# Version:          GPT-4, Juni 2025
+# Autor:            Marco Stampfli und Vania Fernandes Pereira
+# ================================================================
 # Liste der Bilddateien
 bilder = [
     'Dichteverteilung_Punktnormalen.png', 'Dichteverteilung_RGB.png', 'KDE_Green_vs_Blue.png',
