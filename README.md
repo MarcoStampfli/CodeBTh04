@@ -1,8 +1,13 @@
-# CodeBTh04
+# Github Repo für die BTH04: Stadtmodell Basel 1960
 
-# Github Repo für die Bachelor Thesis Nr 04: Stadtmodel Basel 1960
+### Bachelor Thesis Nr 04: 3D-Modellierung des Stadtmodells von Basel 1960
 
-Dieses Repository dokumentiert die Entwicklung eines Stadtmodells, mit Fokus auf die Automatisierung der einzelnen Prozessschritte mit Python.
+von **Vania Fernandes Pereira** und **Marco Stampfli**
+
+<img src=".\docs\img\Screenshot 2025-06-20 112220.png" height="400">
+
+Dieses Repository dokumentiert die Entwicklung eines Stadtmodells, mit Fokus auf die Automatisierung der einzelner Prozessschritte mit Python.
+Der Code wurde mit Hilfe von ChatGPT erstellt.
 
 Aufgrund der Datenmengen müssen die **Punktwolken** jeweils beim Benutzer **lokal** liegen. Dafür sind die Ordner input und output, jeweils pro Arbeitsschritt vorgesehen. Diese sind im .gitignor auskommentiert und werden auf Github nicht synchornisiert. Entsprechende Resultate sind zeitnah auf dem Server abzulegen.
 
