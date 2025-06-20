@@ -74,7 +74,7 @@ CodeBTh04/
 2. Virtual Enviorment erstellen:
 
    ```bash
-   conda create --name env_bth04 python=3.9 -y
+   conda create --name env_bth04 python=3.9 --yes
    ```
 
 3. Virtual Enviorment activieren:
@@ -83,7 +83,22 @@ CodeBTh04/
    conda activate env_bth04
    ```
 
-4. Packages installieren:
+4. Pakete installieren:
+
+   **Option 1** - Alle Pakete über file beziehen
+
    ```bash
-   pip install pandas numpy tqdm scikit-learn matplotlib open3d seaborn
+   pip install -r requirements.txt
+   ```
+
+   **Option 2** - Alle Pakete einzeln laden beziehen
+
+   ```bash
+   pip install pandas numpy tqdm scikit-learn matplotlib open3d seaborn open3d
+   ```
+
+   **Hinweis** - Pakete einzeln Nachträglich instalieren, 3. Env activieren zuerst.
+
+   ```bash
+   pip install paketname
    ```

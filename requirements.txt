@@ -1,14 +1,25 @@
 # Machinelearning
 scikit_learn==1.6.1
+scipy==1.15.3
+skimage==0.0
 
 # Dataprocessing
 numpy==2.2.4
 open3d==0.19.0
 pandas==2.2.3
 pandas==1.4.2
+networkx==3.3
+
+# Modelling
+trimesh==4.6.10
+Shapely==2.1.1
+laspy==2.5.4
 
 # Visual
 ace_tools==0.0
 matplotlib==3.10.1
 seaborn==0.11.2
 tqdm==4.67.1
+
+# Exel generieren
+openpyxl==3.1.5
