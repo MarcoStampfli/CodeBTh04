@@ -3,3 +3,7 @@ arbeitspakete/04_rekonstruktion/Python_Reko/input/250517_Gebäude_Attribut/Diver
 *.e57
 *.obj
 *.ply
+/arbeitspakete/01_klassifizierung/02_Datenerkundung/input/Klass_Platte_3_Ausschnitt_1/HSV_erweitert
+/arbeitspakete/01_klassifizierung/02_Datenerkundung/input/Klass_Platte_3_Ausschnitt_1
+arbeitspakete/01_klassifizierung/02_Datenerkundung/input/PW_KOO_RGB_HSV_norm.txt
+arbeitspakete/02_segmentierung/01_Segm_Baeume/input/PW_Baeume_o_Boden_o_Rauschen.txt
