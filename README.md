@@ -12,7 +12,7 @@ Die Gliederung des Repo's soll wie folgt nach Hierachie erfolgen:
 2. Arbeitsschritt: # logische/nachvollziehbare Gliederung und Namen im Arbeitspaket
 3. Arbeitsgrundlage: # klare Struktur mit Input/Output, ev Markdown mit Erläuterungen, .py oder .ipynb-Dateien
 
-## 📁 Projektstruktur
+## 📁 Projektstruktur Konzept
 
 ```text
 CodeBTh04/
